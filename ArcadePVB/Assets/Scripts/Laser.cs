@@ -10,7 +10,6 @@ public class Laser : MonoBehaviour
     public GameObject ChargeObject;
     public GameObject ImpactObject;
     LineRenderer line;
-    List<Vector2> colliderPoints;
     public BoxCollider2D box;
     float laserLength = 2f;
 
@@ -32,7 +31,7 @@ public class Laser : MonoBehaviour
         line = GetComponent<LineRenderer>();
         line.enabled = false;
         ImpactObject.SetActive(false);
-        Charge();
+        SetCharge(true);
         ChargeObject.transform.localScale = size;
         box.enabled = false;
     }
@@ -40,7 +39,7 @@ public class Laser : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isCharging)
+        if (isCharging || sizeTime < chargingTime / 2)
         {
             sizeTime += Time.deltaTime;
 
@@ -55,6 +54,7 @@ public class Laser : MonoBehaviour
         }
         else
         {
+            UnleachCharge();
             lifeSpan -= Time.deltaTime;
             if (lifeSpan <= 0)
             {
@@ -65,7 +65,6 @@ public class Laser : MonoBehaviour
     }
     public void UnleachCharge()
     {
-        isCharging = false;
         line.enabled = true;
         ChargeObject.SetActive(false);
 
@@ -77,9 +76,9 @@ public class Laser : MonoBehaviour
         
         line.SetPosition(1, new Vector3(0, laserLength, 1));
     }
-    void Charge()
+    public void SetCharge(bool charge)
     {
-        isCharging = true;
+        isCharging = charge;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

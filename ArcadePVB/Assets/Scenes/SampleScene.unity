@@ -1137,7 +1137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9519e0f0e9d520546abe091ddb2983bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScrollSpeed: 0.01
+  ScrollSpeed: 0
   endPoint: {fileID: 1671814227}
 --- !u!50 &1948945256
 Rigidbody2D:
@@ -1252,7 +1252,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8443806293601750092, guid: f40356898af1cad488876b733e3c730e, type: 3}
       propertyPath: m_Name
-      value: Player2
+      value: Player1
       objectReference: {fileID: 0}
     - target: {fileID: 8443806293601750092, guid: f40356898af1cad488876b733e3c730e, type: 3}
       propertyPath: m_Layer

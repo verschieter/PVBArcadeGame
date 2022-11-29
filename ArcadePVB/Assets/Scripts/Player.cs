@@ -57,7 +57,7 @@ public class Player : MonoBehaviour
         }
         if(fire2 <= 0 && firingLaser)
         {
-            firingLaser.UnleachCharge();
+            firingLaser.SetCharge(false);
             firingLaser = null;
         }
 
