@@ -7,13 +7,17 @@ public class BGMove : MonoBehaviour
     public float ScrollSpeed;
     Vector2 Movement;
     public Transform endPoint;
-    // Update is called once per frame
+
     void Update()
     {
-        if (transform.position.y >= -endPoint.position.y)
+        if (!GameManager.IsPaused)
         {
-            Movement.y = ScrollSpeed * Time.deltaTime;
-            transform.position = (Vector2)transform.position - Movement;
+            //move the gameObject upwards untill it is or is higher then endpoint Y position
+            if (transform.position.y >= -endPoint.position.y)
+            {
+                Movement.y = ScrollSpeed * Time.deltaTime;
+                transform.position = (Vector2)transform.position - Movement;
+            }
         }
     }
 }

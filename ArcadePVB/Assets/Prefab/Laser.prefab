@@ -175,11 +175,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChargeObject: {fileID: 643558505162588023}
   ImpactObject: {fileID: 643558504959337275}
-  box: {fileID: 7334044171027869025}
   isCharging: 0
   chargingTime: 2
   chargeMultiplier: 1.25
   size: {x: 0.3, y: 0.3, z: 1}
+  LaserCollider: {fileID: 7334044171027869025}
 --- !u!1 &643558504959337275
 GameObject:
   m_ObjectHideFlags: 0
