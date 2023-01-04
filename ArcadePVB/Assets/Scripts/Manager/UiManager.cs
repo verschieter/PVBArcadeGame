@@ -25,7 +25,6 @@ public class UiManager : MonoBehaviour
             case 1:
                 temp.SetPosition(spawnTransforms[0]);
                 temp.SetDirections(Slider.Direction.LeftToRight);
-
                 break;
 
             case 2:

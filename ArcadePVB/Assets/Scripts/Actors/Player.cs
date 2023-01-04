@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public float health;
+    float maxHealth;
     public int totalScore;
     int comboAmount;
     int comboChange = 5;
@@ -18,6 +19,8 @@ public class Player : MonoBehaviour
     Vector2 movement;
     Rigidbody2D rb;
 
+    public string[] actionMapString = new string[4];
+
     //Firing
     public Bullet bullet;
     public Laser laser;
@@ -30,25 +33,34 @@ public class Player : MonoBehaviour
     float Height;
     float Width;
     Vector2 Screen;
-
+    bool hasSpawned;
     void Start()
     {
+       
+    }
+
+    public void Spawned(GameManager mananger, UiManager UI, int id)
+    {
+        this.id = id;
+        uiManager = UI;
+        gameManager = mananger;
+
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-        Height = sprite.bounds.size.y / 3;
-        Width = sprite.bounds.size.x / 3;
+        Height = sprite.bounds.size.y / 2;
+        Width = sprite.bounds.size.x / 2;
         hud = uiManager.SpawnHud(id, this);
         hud.ChangeHealth(health);
         hud.ChangeScore(totalScore, comboMultiplier);
-
         Camera cam = Camera.main;
         Screen = cam.ScreenToWorldPoint(new Vector3(UnityEngine.Screen.width, UnityEngine.Screen.height, cam.transform.position.z));
-
+        maxHealth = health;
         rb = GetComponent<Rigidbody2D>();
+        hasSpawned = true;
     }
 
     void Update()
     {
-        if (!GameManager.IsPaused)
+        if (!GameManager.IsPaused && hasSpawned)
         {
             Attacking();
 
@@ -60,8 +72,8 @@ public class Player : MonoBehaviour
 
     private void Attacking()
     {
-        float fire1 = Input.GetAxisRaw("Fire1");
-        float fire2 = Input.GetAxisRaw("Fire2");
+        float fire1 = Input.GetAxisRaw(actionMapString[2]);
+        float fire2 = Input.GetAxisRaw(actionMapString[3]);
 
         if (fire2 > 0 && !firingLaser)
         {
@@ -91,8 +103,8 @@ public class Player : MonoBehaviour
 
     private void PlayerMovement()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
+        movement.x = Input.GetAxisRaw(actionMapString[0]);
+        movement.y = Input.GetAxisRaw(actionMapString[1]);
         movement.Normalize();
 
         rb.velocity = movement * moveSpeed;
@@ -106,9 +118,9 @@ public class Player : MonoBehaviour
     public void AddScore(int score)
     {
         comboAmount++;
-        if (comboAmount == comboChange)
+        if (comboAmount == comboChange && comboMultiplier != 8)
         {
-            comboMultiplier++;
+            comboMultiplier *= 2;
             comboAmount = 0;
         }
 
@@ -136,18 +148,21 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    public void ChangeHealth(float damage)
     {
-        health = Mathf.Clamp(health - damage, 0, Mathf.Infinity);
+        health = Mathf.Clamp(health - damage, 0, maxHealth);
 
         comboMultiplier = 1;
         comboAmount = 0;
-        hud.ChangeScore(totalScore, comboMultiplier);
 
+        hud.ChangeScore(totalScore, comboMultiplier);
         hud.ChangeHealth(health);
 
         if (health == 0)
+        {
             gameManager.GameOver();
+            Destroy(gameObject);
+        }
     }
 
     enum TypeFire

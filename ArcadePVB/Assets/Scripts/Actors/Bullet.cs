@@ -39,6 +39,7 @@ public class Bullet : MonoBehaviour
         if (col.gameObject.layer == LayerMask.NameToLayer("Astroide"))
         {
             Astroide astroide = col.gameObject.GetComponent<Astroide>();
+            astroide.TakeDamage(damage);
 
             player.AddScore(astroide.scorePoint);
         }

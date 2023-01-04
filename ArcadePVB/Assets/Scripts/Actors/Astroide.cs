@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Astroide : MonoBehaviour
+[RequireComponent(typeof(CircleCollider2D))]
+public class Astroide : Enemy
 {
     // Start is called before the first frame update
 
@@ -11,12 +12,10 @@ public class Astroide : MonoBehaviour
     public ParticleSystem trailParticle;
     public float damage;
     public int scorePoint;
-    Rigidbody2D rb;
     bool isDestroyed = false;
-    void Start()
+    public override void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-
+        base.Start();
     }
 
     // Update is called once per frame
@@ -42,13 +41,12 @@ public class Astroide : MonoBehaviour
         if (col.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             Player player = col.gameObject.GetComponent<Player>();
-            player.TakeDamage(damage);
+            player.ChangeHealth(damage);
             //TODO: explosion
             explosionParticle.Play();
-
         }
 
-        if(col.gameObject.layer == LayerMask.NameToLayer("Bullet"))
+        if (col.gameObject.layer == LayerMask.NameToLayer("Bullet"))
         {
             return;
         }

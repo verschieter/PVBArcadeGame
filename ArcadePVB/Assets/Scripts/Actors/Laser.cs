@@ -8,7 +8,6 @@ public class Laser : MonoBehaviour
 {
     //visuale object reference
     public GameObject ChargeObject;
-    public GameObject ImpactObject;
     LineRenderer lineLaser;
 
     //Charging 
@@ -28,15 +27,13 @@ public class Laser : MonoBehaviour
     //collision
     public BoxCollider2D LaserCollider;
     Player player;
-
+    public int damage;
     void Start()
     {
         //Get the LineRenderer and set it invisble
         lineLaser = GetComponent<LineRenderer>();
         lineLaser.enabled = false;
 
-        //Set impactObject invisible
-        ImpactObject.SetActive(false);
 
         //set starting size, turn laser collider off and set the starting time.
         ChargeObject.transform.localScale = size;
@@ -95,8 +92,8 @@ public class Laser : MonoBehaviour
         ChargeObject.SetActive(false);
 
         //set the width of the lineLaser start and end to size with a offset
-        lineLaser.startWidth = size.x / 4;
-        lineLaser.endWidth = size.x / 4;
+        lineLaser.startWidth = size.x /5;
+        lineLaser.endWidth = size.x / 5;
 
         //set the length of the lineLaser
         lineLaser.SetPosition(1, new Vector3(0, laserLength, 1));
@@ -121,11 +118,11 @@ public class Laser : MonoBehaviour
 
         if (col != null && col.gameObject.layer != LayerMask.NameToLayer("Block"))
         {
-            ImpactObject.SetActive(true);
+          
             if (col.gameObject.layer == LayerMask.NameToLayer("Astroide"))
             {
                 Astroide astroide = col.gameObject.GetComponent<Astroide>();
-
+                astroide.Destroyed();
                 player.AddScore(astroide.scorePoint);
             }
             //Hit something, print the tag of the object
@@ -140,8 +137,6 @@ public class Laser : MonoBehaviour
             //and set the location of impactObject to the same position
             Vector3 LineLength = new Vector3(0, hitPoint.y - transform.position.y, 1);
             lineLaser.SetPosition(1, LineLength);
-            ImpactObject.transform.position = hitPoint + new Vector3(0, 0.03f);
-            ImpactObject.transform.localScale = size;
             Destroy(col.gameObject);
         }
 

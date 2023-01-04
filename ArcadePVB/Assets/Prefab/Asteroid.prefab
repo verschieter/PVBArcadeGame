@@ -106,6 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae2872b42fdf04c4b9105311a3b2e90a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 30
   fallSpeed: {x: 0, y: 1.5, z: 0}
   explosionParticle: {fileID: 4383718209381917629}
   trailParticle: {fileID: 7405714526022308958}
