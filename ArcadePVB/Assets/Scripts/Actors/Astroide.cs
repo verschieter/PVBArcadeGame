@@ -11,13 +11,13 @@ public class Astroide : Enemy
     public ParticleSystem explosionParticle;
     public ParticleSystem trailParticle;
     public float damage;
-    public int scorePoint;
     bool isDestroyed = false;
+
     public override void Start()
     {
         base.Start();
     }
-
+    
     // Update is called once per frame
     void Update()
     {
@@ -26,7 +26,6 @@ public class Astroide : Enemy
             if (rb.velocity == Vector2.zero)
                 rb.velocity = -fallSpeed;
 
-
             if (explosionParticle.isStopped && isDestroyed == true)
                 Destroy(gameObject);
         }
@@ -34,6 +33,8 @@ public class Astroide : Enemy
         {
             rb.velocity = Vector2.zero;
         }
+        Debug.Log(item);
+
     }
 
     private void OnCollisionEnter2D(Collision2D col)
@@ -42,7 +43,7 @@ public class Astroide : Enemy
         {
             Player player = col.gameObject.GetComponent<Player>();
             player.ChangeHealth(damage);
-            //TODO: explosion
+
             explosionParticle.Play();
         }
 

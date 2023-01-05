@@ -24,8 +24,6 @@ public class Bullet : MonoBehaviour
 
             transform.position = transform.position + new Vector3(0, moveSpeed * Time.deltaTime, 0);
 
-            if (transform.position.y - beginY > maxDistance)
-                Destroy(gameObject);
 
         }
     }
@@ -40,13 +38,22 @@ public class Bullet : MonoBehaviour
         {
             Astroide astroide = col.gameObject.GetComponent<Astroide>();
             astroide.TakeDamage(damage);
-
             player.AddScore(astroide.scorePoint);
+            return;
         }
+        else if (col.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            EnemyShip ship = col.gameObject.GetComponent<EnemyShip>();
+            ship.TakeDamage(damage);
+            player.AddScore(ship.scorePoint);
+            return;
+        }
+
+        
         if (col.gameObject.layer != LayerMask.NameToLayer("Block"))
             Destroy(col.gameObject);
 
         Destroy(gameObject);
-
+        
     }
 }

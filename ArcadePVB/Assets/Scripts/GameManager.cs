@@ -8,18 +8,30 @@ public class GameManager : MonoBehaviour
     public static bool IsPaused;
 
     UiManager uiManager;
-    int amountPlayer;
+    public int amountPlayer = 1;
     public Player[] players = new Player[2];
 
     // Start is called before the first frame update
     void Start()
     {
         uiManager = FindObjectOfType<UiManager>();
-        Player player1 = Instantiate<Player>(players[0]);
-        player1.Spawned(this, uiManager, 1);
-        Player player2 = Instantiate<Player>(players[1]);
-        player2.Spawned(this, uiManager, 2);
-        amountPlayer = 2;
+        for (int i = 1; amountPlayer >= i; i++)
+        {
+            switch (i)
+            {
+                case 1:
+                    Player player1 = Instantiate<Player>(players[0]);
+                    player1.Spawned(this, uiManager, 1);
+
+                    break;
+                case 2:
+                    Player player2 = Instantiate<Player>(players[1]);
+                    player2.Spawned(this, uiManager, 2);
+                    break;
+            }
+
+        }
+
     }
     public void GameOver()
     {

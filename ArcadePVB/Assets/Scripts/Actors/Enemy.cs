@@ -6,7 +6,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public float health;
-
+    public int scorePoint;
     protected Rigidbody2D rb;
     protected Item item;
 
@@ -27,6 +27,7 @@ public class Enemy : MonoBehaviour
     public void SetItem(Item item)
     {
         this.item = item;
+        Debug.Log("astroide got " + this.item);
     }
 
     public void Destroyed()
@@ -34,6 +35,7 @@ public class Enemy : MonoBehaviour
         if (item)
             Instantiate<Item>(item, transform.position, Quaternion.identity);
 
+        Debug.Log("drop =" + item);
         Destroy(gameObject);
     }
 
