@@ -3,15 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
+
 
 public class UiManager : MonoBehaviour
 {
     public PlayerHud playerHud;
+    public GameManager gameManager;
+    public Highscore highscore;
     public GameObject GameOverObject;
     public List<RectTransform> spawnTransforms = new List<RectTransform>();
+    public TMP_InputField nameField;
+
+    bool hasSaved;
+
     // Start is called before the first frame update
     void Start()
     {
+        nameField.characterLimit = 4;
+
     }
 
     public PlayerHud SpawnHud(int Id, Player player)
@@ -47,10 +57,26 @@ public class UiManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         GameManager.IsPaused = false;
     }
-
-    // Update is called once per frame
-    void Update()
+    public void MainMenuB()
     {
-        
+        if (GameManager.IsPaused)
+            GameManager.IsPaused = false;
+
+        SceneManager.LoadScene("MainMenu");
     }
+
+    public void SaveName()
+    {
+        if (nameField.text == string.Empty || hasSaved == true)
+        {
+            return;
+        }
+
+        gameManager.SaveScore(nameField.text);
+        highscore.DisplayHighscore();
+        hasSaved = true;
+    }
+
+    
+  
 }

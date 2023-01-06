@@ -9,6 +9,7 @@ public class Item : MonoBehaviour
     Vector2 fallVector;
     Rigidbody2D rb;
     float fallSpeed = 0.5f;
+
     // Start is called before the first frame update
     public virtual void Start()
     {

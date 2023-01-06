@@ -160,7 +160,7 @@ public class Player : MonoBehaviour
 
         if (health == 0)
         {
-            gameManager.GameOver();
+            gameManager.GameOver(totalScore);
             Destroy(gameObject);
         }
     }

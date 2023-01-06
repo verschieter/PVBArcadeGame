@@ -10,7 +10,8 @@ public class GameManager : MonoBehaviour
     UiManager uiManager;
     public int amountPlayer = 1;
     public Player[] players = new Player[2];
-
+    public SaveManager saveManager;
+    int totalscore;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,18 +34,26 @@ public class GameManager : MonoBehaviour
         }
 
     }
-    public void GameOver()
+    public void GameOver(int score)
     {
         amountPlayer--;
+        totalscore += score;
         if (amountPlayer == 0)
         {
             uiManager.SetGameOverMenu(true);
             IsPaused = true;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
+            
         }
     }
     // Update is called once per frame
+
+    public void SaveScore(string name)
+    {
+        saveManager.IsInHighscore(name, totalscore);
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))

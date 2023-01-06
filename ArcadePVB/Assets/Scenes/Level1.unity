@@ -1007,6 +1007,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 296049649020596634, guid: c608ecb4c647d4541b15a31a0539c773, type: 3}
+      propertyPath: saveManager
+      value: 
+      objectReference: {fileID: 296049649538764729}
+    - target: {fileID: 296049649020596634, guid: c608ecb4c647d4541b15a31a0539c773, type: 3}
       propertyPath: amountPlayer
       value: 1
       objectReference: {fileID: 0}
@@ -1060,10 +1064,38 @@ PrefabInstance:
       objectReference: {fileID: 416048852}
     - target: {fileID: 296049649020596637, guid: c608ecb4c647d4541b15a31a0539c773, type: 3}
       propertyPath: m_Name
-      value: SpawnManager
+      value: GameManager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c608ecb4c647d4541b15a31a0539c773, type: 3}
+--- !u!1 &296049649538764728 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 296049649020596637, guid: c608ecb4c647d4541b15a31a0539c773, type: 3}
+  m_PrefabInstance: {fileID: 296049649538764727}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &296049649538764729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296049649538764728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c03a1b5a63b9704a945cf17db9e51fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &296049649538764730 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 296049649020596634, guid: c608ecb4c647d4541b15a31a0539c773, type: 3}
+  m_PrefabInstance: {fileID: 296049649538764727}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296049649538764728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0714bb702d1e5494286714c9151292e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8143889840770190290
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1071,10 +1103,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 8143889838740113381, guid: 40fb779fa2bb00b4a8947dca78097099, type: 3}
-      propertyPath: m_Pivot.x
-      value: 6
+    - target: {fileID: 147794458881255199, guid: 40fb779fa2bb00b4a8947dca78097099, type: 3}
+      propertyPath: saveManager
+      value: 
+      objectReference: {fileID: 296049649538764729}
+    - target: {fileID: 6225899054887115177, guid: 40fb779fa2bb00b4a8947dca78097099, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6225899054887115177, guid: 40fb779fa2bb00b4a8947dca78097099, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6225899054887115177, guid: 40fb779fa2bb00b4a8947dca78097099, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8143889839563855697, guid: 40fb779fa2bb00b4a8947dca78097099, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8143889840759493840, guid: 40fb779fa2bb00b4a8947dca78097099, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 296049649538764730}
     - target: {fileID: 8143889840759493843, guid: 40fb779fa2bb00b4a8947dca78097099, type: 3}
       propertyPath: m_Name
       value: UIManager
