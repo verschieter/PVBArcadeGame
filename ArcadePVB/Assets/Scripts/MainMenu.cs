@@ -8,13 +8,25 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public void PlayB()
+    public GameObject CreditsMenu;
+    public GameObject PlayerSelectMenu;
+    public void PlayerSelectB()
     {
-        SceneManager.LoadScene("Level1");
+        PlayerSelectMenu.SetActive(!PlayerSelectMenu.activeSelf);
     }
+
+
+    public void Play(int amountOfPlayer)
+    {
+        GameManager.amountPlayer = amountOfPlayer;
+        SceneManager.LoadScene("Level1");
+
+    }
+
+
     public void CreditsB()
     {
-        //credits things
+        CreditsMenu.SetActive(!CreditsMenu.activeSelf);
     }
     public void Quit()
     {

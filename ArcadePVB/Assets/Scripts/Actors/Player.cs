@@ -25,9 +25,13 @@ public class Player : MonoBehaviour
     public Bullet bullet;
     public Laser laser;
     public float fireRate;
+
+    Timer fireTimer;
     float fireTime;
     public Transform firePos;
     Laser firingLaser;
+
+    public List<Item> activeItems = new List<Item>();
 
     //Camara
     float Height;
@@ -36,7 +40,9 @@ public class Player : MonoBehaviour
     bool hasSpawned;
     void Start()
     {
-       
+        fireTimer = new Timer();
+        fireTimer.StartTimer(fireRate);
+        
     }
 
     public void Spawned(GameManager mananger, UiManager UI, int id)
@@ -64,6 +70,14 @@ public class Player : MonoBehaviour
         {
             Attacking();
 
+           
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (!GameManager.IsPaused && hasSpawned)
+        {
             PlayerMovement();
 
             CameraBounds();
@@ -85,17 +99,13 @@ public class Player : MonoBehaviour
             firingLaser.SetCharge(false);
         }
 
-        if (fireTime > 0)
-        {
-            fireTime -= Time.deltaTime;
-        }
 
         if (fire2 <= 0 && !firingLaser)
         {
-            if (fire1 > 0 && fireTime <= 0)
+            if (fire1 > 0 && fireTimer.IsDone())
             {
                 Fire(TypeFire.Bullet);
-                fireTime = fireRate;
+                fireTimer.StartTimer(fireRate);
             }
         }
 
@@ -148,9 +158,15 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void ChangeHealth(float damage)
+    public void ChangeMaxHealth(float changeAmount)
     {
-        health = Mathf.Clamp(health - damage, 0, maxHealth);
+        maxHealth += changeAmount;
+        ChangeHealth(changeAmount);
+    }
+
+    public void ChangeHealth(float changeAmount)
+    {
+        health = Mathf.Clamp(health - changeAmount, 0, maxHealth);
 
         comboMultiplier = 1;
         comboAmount = 0;
@@ -161,7 +177,7 @@ public class Player : MonoBehaviour
         if (health == 0)
         {
             gameManager.GameOver(totalScore);
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 
@@ -169,6 +185,14 @@ public class Player : MonoBehaviour
     {
         Bullet,
         Laser
+    }
+
+    enum Upgrades
+    {
+        AttackSpeed,
+        MoveSpeed,
+        WeaponUpgrade,
+        Rockets
     }
 }
 

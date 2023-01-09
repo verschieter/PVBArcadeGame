@@ -21,7 +21,7 @@ public class Laser : MonoBehaviour
     //Laser 
     float sizeTime;
     float lifeSpan = 0.25f;
-    float laserLength = 1.2f;
+    float laserLength = 4.2f;
     float startTimeOffest = 0.25f;
 
     //collision
@@ -100,6 +100,7 @@ public class Laser : MonoBehaviour
 
         //set the size of the laserCollider to match the viseule of the LineRederer and enables collision
         LaserCollider.size = new Vector2(lineLaser.startWidth, laserLength);
+        LaserCollider.offset = new Vector2(0, laserLength / 2);
         LaserCollider.enabled = true;
     }
     public void SetCharge(bool charge)
@@ -111,33 +112,26 @@ public class Laser : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        //for later to makes sure only hits this layer
-        int layerMask = 1 << 6;
-        layerMask = ~layerMask;
-
-
-        if (col != null && col.gameObject.layer != LayerMask.NameToLayer("Block"))
+        if (col != null && col.gameObject.layer != LayerMask.NameToLayer("BlockB"))
         {
-          
+           
             if (col.gameObject.layer == LayerMask.NameToLayer("Astroide"))
             {
                 Astroide astroide = col.gameObject.GetComponent<Astroide>();
-                astroide.Destroyed();
+                astroide.TakeDamage(damage);
                 player.AddScore(astroide.scorePoint);
+                damage -= 10;
+
             }
-            //Hit something, print the tag of the object
-            Debug.Log("Hitting: " + col.transform.name);
+            else if (col.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                EnemyShip ship = col.gameObject.GetComponent<EnemyShip>();
+                ship.TakeDamage(damage);
+                player.AddScore(ship.scorePoint);
+                damage -= 10;
 
-            //get the locaction of correct hit point between laser and hitObject.
-            float offsetY = col.gameObject.GetComponent<SpriteRenderer>().bounds.size.y / 2f;
-            float offsetX = transform.position.x;
-            Vector3 hitPoint = col.gameObject.transform.position - new Vector3(-offsetX, offsetY);
+            }
 
-            //resize the laser to not extend further then hitpoint
-            //and set the location of impactObject to the same position
-            Vector3 LineLength = new Vector3(0, hitPoint.y - transform.position.y, 1);
-            lineLaser.SetPosition(1, LineLength);
-            Destroy(col.gameObject);
         }
 
         transform.SetParent(null);

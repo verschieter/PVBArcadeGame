@@ -17,7 +17,7 @@ public class Astroide : Enemy
     {
         base.Start();
     }
-    
+
     // Update is called once per frame
     void Update()
     {
@@ -27,14 +27,12 @@ public class Astroide : Enemy
                 rb.velocity = -fallSpeed;
 
             if (explosionParticle.isStopped && isDestroyed == true)
-                Destroy(gameObject);
+                Destroyed();
         }
         else
         {
             rb.velocity = Vector2.zero;
         }
-        Debug.Log(item);
-
     }
 
     private void OnCollisionEnter2D(Collision2D col)

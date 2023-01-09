@@ -12,6 +12,8 @@ public class UiManager : MonoBehaviour
     public GameManager gameManager;
     public Highscore highscore;
     public GameObject GameOverObject;
+    public GameObject PauseObject;
+
     public List<RectTransform> spawnTransforms = new List<RectTransform>();
     public TMP_InputField nameField;
 
@@ -47,9 +49,33 @@ public class UiManager : MonoBehaviour
         return temp;
     }
 
-    public void SetGameOverMenu(bool IsGameOver)
+    public void SetPauseMenu()
+    {
+        PauseObject.SetActive(!PauseObject.activeSelf);
+    }
+
+    public void SetGameOverMenu(bool IsGameOver, bool hasWon)
     {
         GameOverObject.SetActive(IsGameOver);
+        Image image = GameOverObject.GetComponent<Image>();
+        TMP_Text gameOverText = GameOverObject.GetComponentInChildren<TMP_Text>();
+
+
+        if (hasWon)
+        {
+            image.color = new Color(0, 0.60f, 0, 0.5f);
+            gameOverText.text = "Game Won";
+
+        }
+        else
+        {
+            image.color = new Color(0.60f, 0, 0, 0.5f);
+            gameOverText.text = "Game Over";
+
+        }
+
+
+
     }
 
     public void RetryB()

@@ -22,9 +22,9 @@ public class EnemyShip : Enemy
     {
         base.Start();
 
-        fireTimer.StartTimer(1,3);
+        fireTimer.StartTimer(1, 3);
     }
-    
+
     public void SetWayPoints(Transform parentPoint)
     {
         wayPoints = new Transform[parentPoint.childCount];
@@ -38,28 +38,31 @@ public class EnemyShip : Enemy
     }
 
     // Update is called once per frame
-    void Update()
+     void Update()
     {
-        Vector3 dir = moveToPoint.position - transform.position;
-
-        transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
-        //transform.LookAt(moveToPoint);
-
-        if (Vector3.Distance(transform.position, moveToPoint.position) <= 0.4f)
+        if (!GameManager.IsPaused)
         {
-            GetNextWaypoint();
-        }
+            Vector3 dir = moveToPoint.position - transform.position;
 
-        if (fireTimer.IsDone())
-        {
-            Fire();
-            fireTimer.StartTimer(fireRate);
+            transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
+            //transform.LookAt(moveToPoint);
+
+            if (Vector3.Distance(transform.position, moveToPoint.position) <= 0.4f)
+            {
+                GetNextWaypoint();
+            }
+
+            if (fireTimer.IsDone())
+            {
+                Fire();
+                fireTimer.StartTimer(fireRate);
+            }
         }
     }
 
     void Fire()
     {
-        Instantiate<EnemyBullet>(bullet,transform.position,Quaternion.identity);
+        Instantiate<EnemyBullet>(bullet, transform.position, Quaternion.identity);
     }
 
     void GetNextWaypoint()

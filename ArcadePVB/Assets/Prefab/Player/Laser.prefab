@@ -78,7 +78,7 @@ LineRenderer:
   m_SortingOrder: 2
   m_Positions:
   - {x: 0, y: 0, z: 1}
-  - {x: 0, y: 2, z: 1}
+  - {x: 0, y: 4.2, z: 1}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.99
@@ -147,7 +147,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.37}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -178,7 +178,7 @@ MonoBehaviour:
   chargeMultiplier: 1.25
   size: {x: 0.3, y: 0.3, z: 1}
   LaserCollider: {fileID: 7334044171027869025}
-  damage: 15
+  damage: 30
 --- !u!1 &643558505162588023
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,7 +9,8 @@ public class Enemy : MonoBehaviour
     public int scorePoint;
     protected Rigidbody2D rb;
     protected Item item;
-
+    protected SpawnManager spawnManager;
+    int maxChangeOfItem = 10;
     public virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -24,15 +25,23 @@ public class Enemy : MonoBehaviour
             Destroyed();
     }
 
-    public void SetItem(Item item)
+    public void SetItem(Item item, SpawnManager spawn)
     {
-        this.item = item;
+        int random = Random.Range(0, maxChangeOfItem);
+
+        if (random == 5)
+        {
+            this.item = item;
+        }
+        spawnManager = spawn;
     }
 
     public void Destroyed()
     {
         if (item)
             Instantiate<Item>(item, transform.position, Quaternion.identity);
+
+        spawnManager.RemoveFromList(this);
 
         Destroy(gameObject);
     }
