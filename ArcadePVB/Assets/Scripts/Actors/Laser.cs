@@ -118,16 +118,14 @@ public class Laser : MonoBehaviour
             if (col.gameObject.layer == LayerMask.NameToLayer("Astroide"))
             {
                 Astroide astroide = col.gameObject.GetComponent<Astroide>();
-                astroide.TakeDamage(damage);
-                player.AddScore(astroide.scorePoint);
+                astroide.TakeDamage(damage,player);
                 damage -= 10;
 
             }
             else if (col.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 EnemyShip ship = col.gameObject.GetComponent<EnemyShip>();
-                ship.TakeDamage(damage);
-                player.AddScore(ship.scorePoint);
+                ship.TakeDamage(damage,player);
                 damage -= 10;
 
             }

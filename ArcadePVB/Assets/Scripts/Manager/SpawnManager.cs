@@ -15,8 +15,7 @@ public class SpawnManager : MonoBehaviour
     float waveLenght = 5;
     bool isDoneSpawning = true;
 
-    public List<Item> enemyShipItems = new List<Item>();
-    public List<Item> astroideItems = new List<Item>();
+    public List<Item> allItems = new List<Item>();
 
     List<Enemy> emeniesAlive = new List<Enemy>();
 
@@ -25,6 +24,8 @@ public class SpawnManager : MonoBehaviour
     float spawnDistance;
     float spawnDivider = 30;
     int wayPointIndex;
+
+    float timePassed;
     public SpawnManager()
     {
         astroideTimer = new Timer();
@@ -46,6 +47,12 @@ public class SpawnManager : MonoBehaviour
     {
         if (!GameManager.IsPaused && gameEnded == false)
         {
+            if (enemyTimer.IsTimerPause())
+                enemyTimer.PauseTimer();
+
+            if (astroideTimer.IsTimerPause())
+                astroideTimer.PauseTimer();
+
 
             SpawnAstroide();
             float currentDistance = bg.DistanceToFinish();
@@ -54,6 +61,16 @@ public class SpawnManager : MonoBehaviour
                 SpawmnEnemy();
                 spawnDistance += totalDistance / spawnDivider;
             }
+        }
+        else
+        {
+            timePassed += Time.deltaTime;
+            if (!enemyTimer.IsTimerPause())
+                enemyTimer.PauseTimer();
+
+            if (!astroideTimer.IsTimerPause())
+                astroideTimer.PauseTimer();
+
         }
     }
 
@@ -70,8 +87,8 @@ public class SpawnManager : MonoBehaviour
             Astroide tempAstroide = Instantiate<Astroide>(astroide, spawnPos, Quaternion.identity);
 
 
-            int random = Random.Range(0, enemyShipItems.Count);
-            tempAstroide.SetItem(astroideItems[random], this);
+            int random = Random.Range(0, allItems.Count);
+            tempAstroide.SetItem(allItems[random], this);
 
             astroideTimer.StartTimer(2f, 4.6f);
             emeniesAlive.Add(tempAstroide);
@@ -103,16 +120,34 @@ public class SpawnManager : MonoBehaviour
             wayPointIndex = 0;
         for (int i = 0; i < waveLenght; i++)
         {
+            bool paused = false;
             //Debug.Log(random);
+            if (GameManager.IsPaused)
+            {
+                i--;
+                paused = true;
+                Debug.Log("waiting");
 
-            EnemyShip tempShip = Instantiate<EnemyShip>(ship, transform);
-            tempShip.SetWayPoints(waypointsParents[wayPointIndex]);
+                yield return new WaitUntil(() => !GameManager.IsPaused);
 
-            int random = Random.Range(0, enemyShipItems.Count);
-            tempShip.SetItem(enemyShipItems[random], this);
-            emeniesAlive.Add(tempShip);
+            }
+            else
+            {
+                if (paused == true)
+                {
+                    paused = false;
+                    yield return new WaitForSeconds(timePassed);
+                }
+                timePassed = 0;
+                EnemyShip tempShip = Instantiate<EnemyShip>(ship, transform);
+                tempShip.SetWayPoints(waypointsParents[wayPointIndex]);
 
-            yield return new WaitForSeconds(0.4f);
+                int random = Random.Range(0, allItems.Count);
+                tempShip.SetItem(allItems[random], this);
+                emeniesAlive.Add(tempShip);
+                yield return new WaitForSeconds(0.4f);
+            }
+
         }
         wayPointIndex++;
         isDoneSpawning = true;

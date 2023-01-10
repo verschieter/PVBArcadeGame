@@ -35,7 +35,10 @@ public class Timer
     {
         return (startTime + duration) - Time.time;
     }
-
+    public bool IsTimerPause()
+    {
+        return isPaused;
+    }
     public void PauseTimer()
     {
         isPaused = !isPaused;
@@ -47,7 +50,7 @@ public class Timer
         else
         {
             if (remainingTime > 0)
-                duration = remainingTime;
+                StartTimer(remainingTime);
 
             remainingTime = 0;
         }

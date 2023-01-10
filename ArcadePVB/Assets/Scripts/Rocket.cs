@@ -36,16 +36,19 @@ public class Rocket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.IsPaused && !isExploding)
+        if (!GameManager.IsPaused)
         {
+            if (!isExploding)
+            {
+                transform.position = transform.position + new Vector3(0, moveSpeed * Time.deltaTime, 0);
+            }
 
-            transform.position = transform.position + new Vector3(0, moveSpeed * Time.deltaTime, 0);
+            if (isExploding && particle.isStopped)
+            {
+                Destroy(gameObject);
+            }
         }
-
-        if(isExploding && particle.isStopped)
-        {
-            Destroy(gameObject);
-        }
+       
     }
 
     private void OnCollisionEnter2D(Collision2D col)
@@ -70,16 +73,14 @@ public class Rocket : MonoBehaviour
         if (col.gameObject.layer == LayerMask.NameToLayer("Astroide"))
         {
             Astroide astroide = col.gameObject.GetComponent<Astroide>();
-            astroide.TakeDamage(damage);
-            player.AddScore(astroide.scorePoint);
+            astroide.TakeDamage(damage, player);
             circle.enabled = true;
             return;
         }
         else if (col.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             EnemyShip ship = col.gameObject.GetComponent<EnemyShip>();
-            ship.TakeDamage(damage);
-            player.AddScore(ship.scorePoint);
+            ship.TakeDamage(damage, player);
             return;
         }
     }

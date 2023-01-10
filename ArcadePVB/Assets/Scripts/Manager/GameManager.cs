@@ -8,18 +8,26 @@ public class GameManager : MonoBehaviour
     public static bool IsPaused;
 
     public UiManager uiManager;
-    public static int amountPlayer = 1;
+    public static int amountPlayer = 2;
     public Player[] players = new Player[2];
     public SaveManager saveManager;
     public SpawnManager spawnManager;
     int totalscore;
     Vector2 spawnOffset = new Vector2(-0.3f, 0);
-    
 
+    public PermantUpgradeItem UpgradePlayer;
+    List<Upgrades> upgrades = new List<Upgrades>();
     bool gameEnded;
+
+    Timer pauseTimer;
+    float pauseTimeAmount = 0.5f;
     // Start is called before the first frame update
     void Start()
     {
+        pauseTimer = new Timer();
+        pauseTimer.StartTimer(pauseTimeAmount);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         for (int i = 1; amountPlayer >= i; i++)
         {
             switch (i)
@@ -34,9 +42,7 @@ public class GameManager : MonoBehaviour
                     player2.Spawned(this, uiManager, 2);
                     break;
             }
-
         }
-
     }
     public void GameOver(int score)
     {
@@ -66,8 +72,7 @@ public class GameManager : MonoBehaviour
 
         uiManager.SetGameOverMenu(true, hasWon);
         IsPaused = true;
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
+
 
     }
 
@@ -78,12 +83,30 @@ public class GameManager : MonoBehaviour
         saveManager.IsInHighscore(name, totalscore);
     }
 
+    public void Upgrade(Player player)
+    {
+
+        Instantiate<PermantUpgradeItem>(UpgradePlayer).Spawn(player, upgrades);
+        //if (upgrades.Count > 0)
+        //    Debug.Log(upgrades[upgrades.Count - 1]);
+
+    }
+
+    public void ChosenUpgrade(Upgrades type)
+    {
+        upgrades.Add(type);
+        //Debug.Log(type);
+    }
+
+  
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.P) && pauseTimer.IsDone())
         {
             IsPaused = !IsPaused;
             uiManager.SetPauseMenu();
+            pauseTimer.StartTimer(pauseTimeAmount);
         }
 
         if (gameEnded && spawnManager.AllEnmiesDied())
@@ -91,4 +114,14 @@ public class GameManager : MonoBehaviour
             ShowGameOverScreen(true);
         }
     }
+}
+
+
+public enum Upgrades
+{
+    BulletUpgrade,
+    LaserUpgrade,
+    Rockets,
+    SpeedUpgrade,
+    HealthIncrease,
 }

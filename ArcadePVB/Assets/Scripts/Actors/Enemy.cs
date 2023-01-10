@@ -11,18 +11,19 @@ public class Enemy : MonoBehaviour
     protected Item item;
     protected SpawnManager spawnManager;
     int maxChangeOfItem = 10;
+    public int xpAmount;
     public virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, Player player)
     {
         health = Mathf.Clamp(health - damage, 0, Mathf.Infinity);
 
         if (health == 0)
-            Destroyed();
+            Destroyed(player);
     }
 
     public void SetItem(Item item, SpawnManager spawn)
@@ -36,10 +37,12 @@ public class Enemy : MonoBehaviour
         spawnManager = spawn;
     }
 
-    public void Destroyed()
+    public void Destroyed(Player player)
     {
         if (item)
             Instantiate<Item>(item, transform.position, Quaternion.identity);
+        if (player)
+            player.AddScore(scorePoint, xpAmount);
 
         spawnManager.RemoveFromList(this);
 

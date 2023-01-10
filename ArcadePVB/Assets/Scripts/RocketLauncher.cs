@@ -2,36 +2,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RocketItem : Item
+public class RocketLauncher : MonoBehaviour
 {
+    Player player;
+
     public float fireRate;
 
     Timer FireTimer;
-    Transform firePos;
+    public Transform firePos;
     public Rocket rocket;
-
     int rocketAmount = 2;
 
     Vector3 offset = new Vector2(0.15f, 0.15f);
-
     // Start is called before the first frame update
-    protected override void Start()
+
+    public void Setup(Player player)
     {
-        base.Start();
+        this.player = player;
+        firePos = player.firePos;
         FireTimer = new Timer();
+        FireTimer.StartTimer(fireRate * 2);
     }
 
     // Update is called once per frame
-    protected override void Update()
+    void Update()
     {
-        base.Update();
-
-        if (FireTimer.IsDone())
+        if (!GameManager.IsPaused)
         {
-            Fire();
-            FireTimer.StartTimer(fireRate);
+            if (FireTimer.IsTimerPause())
+                FireTimer.PauseTimer();
+
+            if (FireTimer.IsDone())
+            {
+                Fire();
+                FireTimer.StartTimer(fireRate);
+            }
+        }
+        else
+        {
+            if (!FireTimer.IsTimerPause())
+                FireTimer.PauseTimer();
         }
     }
+
 
     void Fire()
     {
@@ -41,24 +54,5 @@ public class RocketItem : Item
             offset.x = -offset.x;
             tempRocket.Setup(player);
         }
-    }
-
-    public override void OnPlayerCollision()
-    {
-        base.OnPlayerCollision();
-        if (!isDuplicate)
-        {
-            effectStarted = true;
-            EffectTimer.StartTimer(effectDuration);
-            firePos = player.firePos;
-            FireTimer.StartTimer(fireRate);
-        }
-    }
-
-    protected override void ResetEffect()
-    {
-       
-        base.ResetEffect();
-
     }
 }

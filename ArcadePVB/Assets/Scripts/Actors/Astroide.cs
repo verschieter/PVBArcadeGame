@@ -27,7 +27,7 @@ public class Astroide : Enemy
                 rb.velocity = -fallSpeed;
 
             if (explosionParticle.isStopped && isDestroyed == true)
-                Destroyed();
+                Destroyed(null);
         }
         else
         {

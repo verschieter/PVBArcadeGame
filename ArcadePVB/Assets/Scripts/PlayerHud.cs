@@ -21,7 +21,12 @@ public class PlayerHud : MonoBehaviour
     }
     // Start is called before the first frame update
 
-    
+    public void SetHealthBarSize(float WidthAmount, float newMaxHealth)
+    {
+        float newWidth = healthBar.GetComponent<RectTransform>().rect.width + (WidthAmount * 4);
+        healthBar.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
+        healthBar.maxValue = newMaxHealth;
+    }
     public void SetDirections(Slider.Direction dir)
     {
         healthBar.direction = dir;

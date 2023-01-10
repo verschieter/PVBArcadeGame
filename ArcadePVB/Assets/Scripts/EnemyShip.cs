@@ -38,10 +38,13 @@ public class EnemyShip : Enemy
     }
 
     // Update is called once per frame
-     void Update()
+    void Update()
     {
         if (!GameManager.IsPaused)
         {
+            if (fireTimer.IsTimerPause())
+                fireTimer.PauseTimer();
+
             Vector3 dir = moveToPoint.position - transform.position;
 
             transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
@@ -57,6 +60,11 @@ public class EnemyShip : Enemy
                 Fire();
                 fireTimer.StartTimer(fireRate);
             }
+        }
+        else
+        {
+            if (!fireTimer.IsTimerPause())
+                fireTimer.PauseTimer();
         }
     }
 
