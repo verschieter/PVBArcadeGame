@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
-public class Laser : MonoBehaviour
+public class Laser : Weapon
 {
     //visuale object reference
     public GameObject ChargeObject;
@@ -17,19 +17,20 @@ public class Laser : MonoBehaviour
     public float chargeMultiplier;
     int chargeMax = 3;
     public Vector3 size;
+    RaycastHit2D[] hit = new RaycastHit2D[5];
 
     //Laser 
     float sizeTime;
     float lifeSpan = 0.25f;
-    float laserLength = 4.2f;
+    float laserLength = 5f;
     float startTimeOffest = 0.25f;
 
     //collision
     public BoxCollider2D LaserCollider;
-    Player player;
-    public int damage;
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+
         //Get the LineRenderer and set it invisble
         lineLaser = GetComponent<LineRenderer>();
         lineLaser.enabled = false;
@@ -40,20 +41,17 @@ public class Laser : MonoBehaviour
         LaserCollider.enabled = false;
         sizeTime = chargingTime - startTimeOffest;
 
+
         //Start the charging
         SetCharge(true);
     }
 
-    public void SetPlayer(Player player)
-    {
-        this.player = player;
-    }
-
-    void Update()
+    protected override void Update()
     {
         if (!GameManager.IsPaused)
         {
 
+            base.Update();
             //checks to see if the player is still holding charge or the charge hasnt reach the first stage yet
             if (isCharging || chargeTimes <= 0)
             {
@@ -75,7 +73,9 @@ public class Laser : MonoBehaviour
             {
                 //when player isnt holding charge and chargetime is higher then the first stage we will then Call UnleachCharge
                 //and set a Life span timer which when depleted destroys the gameobject
+
                 UnleachCharge();
+
                 lifeSpan -= Time.deltaTime;
                 if (lifeSpan <= 0)
                 {
@@ -85,14 +85,44 @@ public class Laser : MonoBehaviour
         }
 
     }
+
+    public override void OnEnemyCollision(GameObject enemyObject)
+    {
+        if (enemyObject != null && enemyObject.layer != LayerMask.NameToLayer("BlockB"))
+        {
+            base.OnEnemyCollision(enemyObject);
+            damage -= 10;
+        }
+        transform.SetParent(null);
+
+    }
+    //public override void HitBlock(GameObject blockObject)
+    //{
+    //    laserLength = Vector3.Distance(transform.position, blockObject.transform.position);
+    //}
     public void UnleachCharge()
     {
+        LayerMask layer = LayerMask.NameToLayer("BlockB");
+
+        int hits = Physics2D.RaycastNonAlloc(transform.position + new Vector3(0, 0.5f), Vector2.up, hit);
+
+        for (int i = 0; i < hits; i++)
+        {
+            if (hit[i].transform.gameObject.layer == layer)
+            {
+                BoxCollider2D box = hit[i].transform.GetComponent<BoxCollider2D>();
+              
+                float yLower = hit[i].transform.position.y - (box.bounds.center.y - box.bounds.extents.y);
+                laserLength =  hit[i].transform.position.y - yLower - transform.position.y;
+            }
+        }
+      
         //turn on the linerederer and turn of the chargeObject
         lineLaser.enabled = true;
         ChargeObject.SetActive(false);
 
         //set the width of the lineLaser start and end to size with a offset
-        lineLaser.startWidth = size.x /5;
+        lineLaser.startWidth = size.x / 5;
         lineLaser.endWidth = size.x / 5;
 
         //set the length of the lineLaser
@@ -110,30 +140,30 @@ public class Laser : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col != null && col.gameObject.layer != LayerMask.NameToLayer("BlockB"))
-        {
-           
-            if (col.gameObject.layer == LayerMask.NameToLayer("Astroide"))
-            {
-                Astroide astroide = col.gameObject.GetComponent<Astroide>();
-                astroide.TakeDamage(damage,player);
-                damage -= 10;
+    //private void OnTriggerEnter2D(Collider2D col)
+    //{
+    //    if (col != null && col.gameObject.layer != LayerMask.NameToLayer("BlockB"))
+    //    {
 
-            }
-            else if (col.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-            {
-                EnemyShip ship = col.gameObject.GetComponent<EnemyShip>();
-                ship.TakeDamage(damage,player);
-                damage -= 10;
+    //        if (col.gameObject.layer == LayerMask.NameToLayer("Astroide"))
+    //        {
+    //            Astroide astroide = col.gameObject.GetComponent<Astroide>();
+    //            astroide.TakeDamage(damage,player);
+    //            damage -= 10;
 
-            }
+    //        }
+    //        else if (col.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+    //        {
+    //            EnemyShip ship = col.gameObject.GetComponent<EnemyShip>();
+    //            ship.TakeDamage(damage,player);
+    //            damage -= 10;
 
-        }
+    //        }
 
-        transform.SetParent(null);
+    //    }
 
-    }
+    //    transform.SetParent(null);
+
+    //}
 
 }

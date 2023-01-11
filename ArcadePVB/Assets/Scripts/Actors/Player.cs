@@ -180,7 +180,7 @@ public class Player : MonoBehaviour
             case TypeFire.Laser:
                 firingLaser = Instantiate<Laser>(laser, firePos.position, Quaternion.identity);
                 firingLaser.transform.SetParent(transform);
-                firingLaser.SetPlayer(this);
+                //firingLaser.SetPlayer(this);
                 break;
 
             default:

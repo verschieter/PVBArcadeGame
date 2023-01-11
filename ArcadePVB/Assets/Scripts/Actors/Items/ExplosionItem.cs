@@ -7,12 +7,12 @@ public class ExplosionItem : Item
 {
     CircleCollider2D explosionCollider;
     public int damage;
-
+    public ParticleSystem explosion;
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
-        explosionCollider.GetComponent<CircleCollider2D>();
+        explosionCollider = GetComponent<CircleCollider2D>();
         explosionCollider.isTrigger = true;
         explosionCollider.enabled = false;
     }
@@ -22,24 +22,30 @@ public class ExplosionItem : Item
     {
         base.Update();
 
-
+        if(effectStarted && explosion.isStopped)
+        {
+            ResetEffect();
+        }
     }
 
     public override void OnPlayerCollision()
     {
         base.OnPlayerCollision();
-        transform.SetParent(player.transform);
+        explosion.Play();
         effectStarted = true;
         EffectTimer.StartTimer(effectDuration);
         explosionCollider.enabled = true;
+        gameObject.layer = LayerMask.NameToLayer("Bullet");
     }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
+
         if (col.gameObject.layer == LayerMask.NameToLayer("Astroide"))
         {
             Astroide astroide = col.gameObject.GetComponent<Astroide>();
             astroide.TakeDamage(damage, player);
+
             return;
         }
         else if (col.gameObject.layer == LayerMask.NameToLayer("Enemy"))

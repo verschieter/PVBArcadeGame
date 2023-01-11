@@ -47,7 +47,8 @@ public class Item : MonoBehaviour
             if (EffectTimer.IsTimerPause())
                 EffectTimer.PauseTimer();
 
-            transform.position -= (Vector3)fallVector * Time.deltaTime;
+            if (!effectStarted)
+                transform.position -= (Vector3)fallVector * Time.deltaTime;
 
             if (effectStarted && EffectTimer.IsDone())
             {

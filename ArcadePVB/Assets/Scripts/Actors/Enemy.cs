@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     public float health;
     public int scorePoint;
     protected Rigidbody2D rb;
+    [SerializeField]
     protected Item item;
     protected SpawnManager spawnManager;
     int maxChangeOfItem = 10;
@@ -43,8 +44,9 @@ public class Enemy : MonoBehaviour
             Instantiate<Item>(item, transform.position, Quaternion.identity);
         if (player)
             player.AddScore(scorePoint, xpAmount);
-
-        spawnManager.RemoveFromList(this);
+        
+        if (spawnManager)
+            spawnManager.RemoveFromList(this);
 
         Destroy(gameObject);
     }

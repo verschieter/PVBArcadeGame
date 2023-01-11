@@ -136,6 +136,7 @@ MonoBehaviour:
   comboMultiplier: 1
   uiManager: {fileID: 0}
   gameManager: {fileID: 0}
+  id: 1
   moveSpeed: 2
   actionMapString:
   - P1Hori
@@ -146,6 +147,7 @@ MonoBehaviour:
   laser: {fileID: 643558503320134406, guid: e1f86860f928117469007103584e4d94, type: 3}
   fireRate: 0.2
   firePos: {fileID: 2007459848}
+  activeItems: []
 --- !u!50 &8443806293601750088
 Rigidbody2D:
   serializedVersion: 4
@@ -158,7 +160,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 100
+  m_Mass: 10000
   m_LinearDrag: 0
   m_AngularDrag: 1
   m_GravityScale: 0

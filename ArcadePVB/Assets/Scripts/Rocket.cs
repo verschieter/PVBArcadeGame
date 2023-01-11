@@ -55,8 +55,8 @@ public class Rocket : MonoBehaviour
     {
         if (col.gameObject.layer == LayerMask.NameToLayer("Astroide") || col.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            circle.enabled = true;
             box.enabled = false;
+            circle.enabled = true;
             sprite.enabled = false;
             isExploding = true;
             particle.Play();
@@ -65,6 +65,7 @@ public class Rocket : MonoBehaviour
 
         if (col.gameObject.layer != LayerMask.NameToLayer("BlockB"))
             Destroy(col.gameObject);
+
         Destroy(gameObject);
     }
 

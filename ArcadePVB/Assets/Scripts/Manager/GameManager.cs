@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public static bool IsPaused;
 
     public UiManager uiManager;
-    public static int amountPlayer = 2;
+    public static int amountPlayer = 1;
     public Player[] players = new Player[2];
     public SaveManager saveManager;
     public SpawnManager spawnManager;
@@ -85,6 +85,8 @@ public class GameManager : MonoBehaviour
 
     public void Upgrade(Player player)
     {
+        if (player)
+            return;
 
         Instantiate<PermantUpgradeItem>(UpgradePlayer).Spawn(player, upgrades);
         //if (upgrades.Count > 0)
