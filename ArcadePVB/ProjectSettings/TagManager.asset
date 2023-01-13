@@ -11,15 +11,15 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Bullet
+  - Enemy
+  - Astroide
+  - BlockA
+  - Item
+  - EBullet
+  - BlockB
+  - OnlyItems
   - 
   - 
   - 
