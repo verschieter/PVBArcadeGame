@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-
     public static bool IsPaused;
 
     public UiManager uiManager;
     public static int amountPlayer = 1;
+    public int startAmount;
     public Player[] players = new Player[2];
     public SaveManager saveManager;
     public SpawnManager spawnManager;
@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        startAmount = amountPlayer;
         pauseTimer = new Timer();
         pauseTimer.StartTimer(pauseTimeAmount);
         Cursor.lockState = CursorLockMode.Locked;
@@ -52,6 +53,7 @@ public class GameManager : MonoBehaviour
         {
             ShowGameOverScreen(false);
         }
+        gameEnded = true;
     }
     public void GameWon()
     {
@@ -69,11 +71,8 @@ public class GameManager : MonoBehaviour
 
     public void ShowGameOverScreen(bool hasWon)
     {
-
         uiManager.SetGameOverMenu(true, hasWon);
         IsPaused = true;
-
-
     }
 
     // Update is called once per frame
@@ -85,26 +84,19 @@ public class GameManager : MonoBehaviour
 
     public void Upgrade(Player player)
     {
-        if (player)
-            return;
-
         Instantiate<PermantUpgradeItem>(UpgradePlayer).Spawn(player, upgrades);
-        //if (upgrades.Count > 0)
-        //    Debug.Log(upgrades[upgrades.Count - 1]);
 
     }
 
     public void ChosenUpgrade(Upgrades type)
     {
         upgrades.Add(type);
-        //Debug.Log(type);
     }
-
-  
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P) && pauseTimer.IsDone())
+
+        if (Input.GetAxis("Pause") > 0 && pauseTimer.IsDone() && !gameEnded)
         {
             IsPaused = !IsPaused;
             uiManager.SetPauseMenu();

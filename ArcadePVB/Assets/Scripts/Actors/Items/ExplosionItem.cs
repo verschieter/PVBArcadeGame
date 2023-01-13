@@ -8,10 +8,13 @@ public class ExplosionItem : Item
     CircleCollider2D explosionCollider;
     public int damage;
     public ParticleSystem explosion;
+    public AudioClip clip;
+    AudioSource source;
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
+        source = GetComponent<AudioSource>();
         explosionCollider = GetComponent<CircleCollider2D>();
         explosionCollider.isTrigger = true;
         explosionCollider.enabled = false;
@@ -24,12 +27,15 @@ public class ExplosionItem : Item
 
         if(effectStarted && explosion.isStopped)
         {
+            player.activeItems.Remove(this);
             ResetEffect();
         }
     }
 
     public override void OnPlayerCollision()
     {
+        source.clip = clip;
+        source.Play();
         base.OnPlayerCollision();
         explosion.Play();
         effectStarted = true;
@@ -40,7 +46,6 @@ public class ExplosionItem : Item
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-
         if (col.gameObject.layer == LayerMask.NameToLayer("Astroide"))
         {
             Astroide astroide = col.gameObject.GetComponent<Astroide>();
@@ -58,8 +63,6 @@ public class ExplosionItem : Item
 
     protected override void ResetEffect()
     {
-
         base.ResetEffect();
-
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class SaveManager : MonoBehaviour
 {
     // Start is called before the first frame update
-    string[] highscoreString = new string[10];
+    string[] highscoreString = new string[5];
     int saveAmount;
 
     void Awake()

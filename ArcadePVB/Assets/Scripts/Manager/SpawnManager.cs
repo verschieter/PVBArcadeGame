@@ -116,39 +116,42 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnShip()
     {
-        if (wayPointIndex == waypointsParents.Count)
-            wayPointIndex = 0;
-        for (int i = 0; i < waveLenght; i++)
+        if (ship)
         {
-            bool paused = false;
-            //Debug.Log(random);
-            if (GameManager.IsPaused)
-            {
-                i--;
-                paused = true;
-                Debug.Log("waiting");
 
-                yield return new WaitUntil(() => !GameManager.IsPaused);
-
-            }
-            else
+            if (wayPointIndex == waypointsParents.Count)
+                wayPointIndex = 0;
+            for (int i = 0; i < waveLenght; i++)
             {
-                if (paused == true)
+                bool paused = false;
+                //Debug.Log(random);
+                if (GameManager.IsPaused)
                 {
-                    paused = false;
-                    yield return new WaitForSeconds(timePassed);
+                    i--;
+                    paused = true;
+                    yield return new WaitUntil(() => !GameManager.IsPaused);
+
                 }
-                timePassed = 0;
-                EnemyShip tempShip = Instantiate<EnemyShip>(ship, transform);
-                tempShip.SetWayPoints(waypointsParents[wayPointIndex]);
+                else
+                {
+                    if (paused == true)
+                    {
+                        paused = false;
+                        yield return new WaitForSeconds(timePassed);
+                    }
+                    timePassed = 0;
+                    EnemyShip tempShip = Instantiate<EnemyShip>(ship, transform);
+                    tempShip.SetWayPoints(waypointsParents[wayPointIndex]);
 
-                int random = Random.Range(0, allItems.Count);
-                tempShip.SetItem(allItems[random], this);
-                emeniesAlive.Add(tempShip);
-                yield return new WaitForSeconds(0.4f);
+                    int random = Random.Range(0, allItems.Count);
+                    tempShip.SetItem(allItems[random], this);
+                    emeniesAlive.Add(tempShip);
+                    yield return new WaitForSeconds(0.4f);
+                }
+
             }
-
         }
+
         wayPointIndex++;
         isDoneSpawning = true;
 

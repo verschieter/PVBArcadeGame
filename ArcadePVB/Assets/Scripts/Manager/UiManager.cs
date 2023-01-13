@@ -16,13 +16,131 @@ public class UiManager : MonoBehaviour
 
     public List<RectTransform> spawnTransforms = new List<RectTransform>();
     public TMP_InputField nameField;
-
+    List<Button> buttons;
+    bool movedSelection;
     bool hasSaved;
+    int buttonIndex = -1;
+    int nameIndex;
+    int charIndex;
+    char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+    char[] a;
 
     // Start is called before the first frame update
     void Start()
     {
         nameField.characterLimit = 4;
+        a = new char[nameField.characterLimit];
+    }
+
+    private void Update()
+    {
+        if (buttonIndex >= 0)
+        {
+            float horizantalInput = Input.GetAxis($"P1Hori");
+            if (nameField.IsActive())
+            {
+                if (nameField.isFocused)
+                {
+                    PlaceCharacterInInputField(horizantalInput);
+                }
+            }
+
+            float verticalInput = Input.GetAxis($"P1Verti");
+
+            if (verticalInput < 0 && movedSelection == false)
+            {
+                SelectButton(1);
+                movedSelection = true;
+            }
+
+            if (verticalInput > 0 && movedSelection == false)
+            {
+                SelectButton(-1);
+                movedSelection = true;
+            }
+
+            if (Mathf.Approximately(verticalInput, 0) && Mathf.Approximately(horizantalInput, 0))
+                movedSelection = false;
+
+
+        }
+    }
+
+    private void PlaceCharacterInInputField(float horizantalInput)
+    {
+        bool submit = Input.GetButtonDown($"Submit");
+        bool remove = Input.GetButtonDown($"Remove");
+
+        if (horizantalInput < 0 && movedSelection == false)
+        {
+            nameIndex--;
+            if (nameIndex < 0)
+                nameIndex = alpha.Length - 1;
+
+            a[charIndex] = alpha[nameIndex];
+            movedSelection = true;
+            nameField.text = a.ArrayToString();
+        }
+
+        if (horizantalInput > 0 && movedSelection == false)
+        {
+            nameIndex++;
+            if (nameIndex == alpha.Length)
+                nameIndex = 0;
+
+            a[charIndex] = alpha[nameIndex];
+
+            movedSelection = true;
+            nameField.text = a.ArrayToString();
+        }
+
+        if (submit)
+        {
+            if (charIndex < a.Length - 1)
+                charIndex++;
+            else
+                SelectButton(1);
+
+            nameIndex = 0;
+
+        }
+        if (remove)
+        {
+            if (charIndex > -1)
+            {
+                a[charIndex] = ' ';
+                if (charIndex > 0)
+                    charIndex--;
+
+                nameField.text = a.ArrayToString();
+            }
+        }
+    }
+
+    void SelectButton(int changeIndex)
+    {
+        buttonIndex += changeIndex;
+
+        int total = buttons.Count;
+
+        if (nameField.IsActive())
+        {
+            total += 1;
+        }
+
+        if (buttonIndex < 0)
+            buttonIndex = total + changeIndex;
+
+        if (buttonIndex == total)
+            buttonIndex = 0;
+
+        if (buttonIndex == buttons.Count)
+        {
+            nameField.Select();
+            return;
+        }
+
+        buttons[buttonIndex].Select();
 
     }
 
@@ -52,11 +170,30 @@ public class UiManager : MonoBehaviour
     public void SetPauseMenu()
     {
         PauseObject.SetActive(!PauseObject.activeSelf);
+        if (PauseObject.activeSelf)
+        {
+            buttons = new List<Button>(PauseObject.GetComponentsInChildren<Button>());
+            buttonIndex = 0;
+            SelectButton(buttonIndex);
+        }
+        else
+        {
+            buttonIndex = -1;
+        }
+
     }
 
     public void SetGameOverMenu(bool IsGameOver, bool hasWon)
     {
+
         GameOverObject.SetActive(IsGameOver);
+        if (IsGameOver)
+        {
+            buttons = new List<Button>(GameOverObject.GetComponentsInChildren<Button>());
+            buttonIndex = 0;
+            SelectButton(buttonIndex);
+        }
+
         Image image = GameOverObject.GetComponent<Image>();
         TMP_Text gameOverText = GameOverObject.GetComponentInChildren<TMP_Text>();
 
@@ -80,8 +217,9 @@ public class UiManager : MonoBehaviour
 
     public void RetryB()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         GameManager.IsPaused = false;
+        GameManager.amountPlayer = gameManager.startAmount;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
     }
     public void MainMenuB()
     {
@@ -102,7 +240,4 @@ public class UiManager : MonoBehaviour
         highscore.DisplayHighscore();
         hasSaved = true;
     }
-
-    
-  
 }

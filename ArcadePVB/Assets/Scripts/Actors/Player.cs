@@ -12,8 +12,8 @@ public class Player : MonoBehaviour
     int comboChange = 5;
     public int comboMultiplier = 1;
 
-    public UiManager uiManager;
-    public GameManager gameManager;
+    UiManager uiManager;
+    private GameManager gameManager;
     PlayerHud hud;
     public int id = 1;
 
@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     
     //xp
     int Xp;
-    int levelUpAmount = 100;
+    float levelUpAmount = 100;
     int timesLevelUped;
     int maxLevel = 3;
 
@@ -34,10 +34,10 @@ public class Player : MonoBehaviour
     //Firing
     public Bullet bullet;
     public Laser laser;
-    public float fireRate;
-    Timer fireTimer;
-    public Transform firePos;
     Laser firingLaser;
+    public float fireRate;
+    public Transform firePos;
+    Timer fireTimer;
 
     //items
     public List<Item> activeItems = new List<Item>();
@@ -47,6 +47,9 @@ public class Player : MonoBehaviour
     float Width;
     Vector2 Screen;
     bool hasSpawned;
+
+   
+
     void Start()
     {
         fireTimer = new Timer();
@@ -73,6 +76,11 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         hasSpawned = true;
 
+    }
+
+    public GameManager GiveGameManager()
+    {
+        return gameManager;
     }
 
     void Update()
@@ -160,7 +168,7 @@ public class Player : MonoBehaviour
         {
             gameManager.Upgrade(this);
             timesLevelUped++;
-            levelUpAmount *= levelUpAmount / 2;
+            levelUpAmount *= 1.5f;
             Xp = 0;
         }
 
@@ -208,7 +216,7 @@ public class Player : MonoBehaviour
         if (health == 0)
         {
             gameManager.GameOver(totalScore);
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
 
     }

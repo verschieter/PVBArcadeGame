@@ -14,14 +14,12 @@ public class InvincibleItem : Item
     protected override void Start()
     {
         base.Start();
-
     }
 
     // Update is called once per frame
     protected override void Update()
     {
         base.Update();
-
     }
 
     public override void OnPlayerCollision()
@@ -45,7 +43,6 @@ public class InvincibleItem : Item
     {
         if (!isDuplicate)
         {
-
             playerSprite.sortingOrder = previousOrder;
             color.a = oldAlpha;
             playerSprite.color = color;
