@@ -11,25 +11,28 @@ public class UiManager : MonoBehaviour
     public PlayerHud playerHud;
     public GameManager gameManager;
     public Highscore highscore;
-    public GameObject GameOverObject;
-    public GameObject PauseObject;
+    public GameObject gameOverObject;
+    public GameObject pauseObject;
 
     public List<RectTransform> spawnTransforms = new List<RectTransform>();
     public TMP_InputField nameField;
     List<Button> buttons;
+
     bool movedSelection;
     bool hasSaved;
+    
     int buttonIndex = -1;
     int nameIndex;
     int charIndex;
+
     char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-    char[] a;
+    char[] addedChar;
 
     // Start is called before the first frame update
     void Start()
     {
         nameField.characterLimit = 4;
-        a = new char[nameField.characterLimit];
+        addedChar = new char[nameField.characterLimit];
     }
 
     private void Update()
@@ -53,7 +56,7 @@ public class UiManager : MonoBehaviour
                 movedSelection = true;
             }
 
-            if (verticalInput > 0 && movedSelection == false)
+            else if (verticalInput > 0 && movedSelection == false)
             {
                 SelectButton(-1);
                 movedSelection = true;
@@ -61,8 +64,6 @@ public class UiManager : MonoBehaviour
 
             if (Mathf.Approximately(verticalInput, 0) && Mathf.Approximately(horizantalInput, 0))
                 movedSelection = false;
-
-
         }
     }
 
@@ -77,9 +78,9 @@ public class UiManager : MonoBehaviour
             if (nameIndex < 0)
                 nameIndex = alpha.Length - 1;
 
-            a[charIndex] = alpha[nameIndex];
+            addedChar[charIndex] = alpha[nameIndex];
             movedSelection = true;
-            nameField.text = a.ArrayToString();
+            nameField.text = addedChar.ArrayToString();
         }
 
         if (horizantalInput > 0 && movedSelection == false)
@@ -88,15 +89,17 @@ public class UiManager : MonoBehaviour
             if (nameIndex == alpha.Length)
                 nameIndex = 0;
 
-            a[charIndex] = alpha[nameIndex];
+            addedChar[charIndex] = alpha[nameIndex];
 
             movedSelection = true;
-            nameField.text = a.ArrayToString();
+            nameField.text = addedChar.ArrayToString();
         }
 
-        if (submit)
+        if (submit && addedChar.ArrayToString() != string.Empty)
         {
-            if (charIndex < a.Length - 1)
+            
+
+            if (charIndex < addedChar.Length - 1)
                 charIndex++;
             else
                 SelectButton(1);
@@ -108,11 +111,11 @@ public class UiManager : MonoBehaviour
         {
             if (charIndex > -1)
             {
-                a[charIndex] = ' ';
+                addedChar[charIndex] = ' ';
                 if (charIndex > 0)
                     charIndex--;
 
-                nameField.text = a.ArrayToString();
+                nameField.text = addedChar.ArrayToString();
             }
         }
     }
@@ -127,7 +130,6 @@ public class UiManager : MonoBehaviour
         {
             total += 1;
         }
-
         if (buttonIndex < 0)
             buttonIndex = total + changeIndex;
 
@@ -153,12 +155,12 @@ public class UiManager : MonoBehaviour
         switch (Id)
         {
             case 1:
-                temp.SetPosition(spawnTransforms[0]);
+                temp.SetPosition(spawnTransforms[0], TextAlignmentOptions.Left);
                 temp.SetDirections(Slider.Direction.LeftToRight);
                 break;
 
             case 2:
-                temp.SetPosition(spawnTransforms[1]);
+                temp.SetPosition(spawnTransforms[1], TextAlignmentOptions.Right);
                 temp.SetDirections(Slider.Direction.RightToLeft);
                 break;
             default:
@@ -169,10 +171,10 @@ public class UiManager : MonoBehaviour
 
     public void SetPauseMenu()
     {
-        PauseObject.SetActive(!PauseObject.activeSelf);
-        if (PauseObject.activeSelf)
+        pauseObject.SetActive(!pauseObject.activeSelf);
+        if (pauseObject.activeSelf)
         {
-            buttons = new List<Button>(PauseObject.GetComponentsInChildren<Button>());
+            buttons = new List<Button>(pauseObject.GetComponentsInChildren<Button>());
             buttonIndex = 0;
             SelectButton(buttonIndex);
         }
@@ -186,16 +188,16 @@ public class UiManager : MonoBehaviour
     public void SetGameOverMenu(bool IsGameOver, bool hasWon)
     {
 
-        GameOverObject.SetActive(IsGameOver);
+        gameOverObject.SetActive(IsGameOver);
         if (IsGameOver)
         {
-            buttons = new List<Button>(GameOverObject.GetComponentsInChildren<Button>());
+            buttons = new List<Button>(gameOverObject.GetComponentsInChildren<Button>());
             buttonIndex = 0;
-            SelectButton(buttonIndex);
+            SelectButton(2);
         }
 
-        Image image = GameOverObject.GetComponent<Image>();
-        TMP_Text gameOverText = GameOverObject.GetComponentInChildren<TMP_Text>();
+        Image image = gameOverObject.GetComponent<Image>();
+        TMP_Text gameOverText = gameOverObject.GetComponentInChildren<TMP_Text>();
 
 
         if (hasWon)
@@ -208,11 +210,7 @@ public class UiManager : MonoBehaviour
         {
             image.color = new Color(0.60f, 0, 0, 0.5f);
             gameOverText.text = "Game Over";
-
         }
-
-
-
     }
 
     public void RetryB()
@@ -231,12 +229,12 @@ public class UiManager : MonoBehaviour
 
     public void SaveName()
     {
-        if (nameField.text == string.Empty || hasSaved == true)
+        if (addedChar.ArrayToString() == string.Empty || hasSaved == true)
         {
             return;
         }
 
-        gameManager.SaveScore(nameField.text);
+        gameManager.SaveScore(addedChar.ArrayToString());
         highscore.DisplayHighscore();
         hasSaved = true;
     }

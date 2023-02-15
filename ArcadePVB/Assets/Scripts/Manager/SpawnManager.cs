@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
-
     public Astroide astroide;
-    public EnemyShip ship;
-    public BGMove bg;
-    public List<Transform> waypointsParents = new List<Transform>();
+    public List<EnemyShip> enemyShips = new List<EnemyShip>();
+
+    public BGMove bgMove;
+
+    public List<Transform> waypointsSmallEnemies = new List<Transform>();
+    public List<Transform> waypointsMediumEnemies = new List<Transform>();
 
     Timer astroideTimer;
     Timer enemyTimer;
 
-    float waveLenght = 5;
     bool isDoneSpawning = true;
 
     public List<Item> allItems = new List<Item>();
@@ -22,10 +23,16 @@ public class SpawnManager : MonoBehaviour
     bool gameEnded;
     float totalDistance;
     float spawnDistance;
-    float spawnDivider = 30;
+    float spawnDivider = 25;
     int wayPointIndex;
 
     float timePassed;
+    bool hasIncreaseDifficulty;
+    bool smallEnemiesHasSpawned;
+
+    float IncreaseMulitplier = 1.5f;
+
+    float[] astroideSpawnTimes = new float[2] { 2.5f, 4.5f };
     public SpawnManager()
     {
         astroideTimer = new Timer();
@@ -34,7 +41,7 @@ public class SpawnManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        totalDistance = bg.DistanceToFinish();
+        totalDistance = bgMove.DistanceToFinish();
 
         spawnDistance = totalDistance / spawnDivider;
 
@@ -47,18 +54,22 @@ public class SpawnManager : MonoBehaviour
     {
         if (!GameManager.IsPaused && gameEnded == false)
         {
-            if (enemyTimer.IsTimerPause())
-                enemyTimer.PauseTimer();
-
             if (astroideTimer.IsTimerPause())
                 astroideTimer.PauseTimer();
 
-
             SpawnAstroide();
-            float currentDistance = bg.DistanceToFinish();
+
+            float currentDistance = bgMove.DistanceToFinish();
+
+            if (currentDistance <= totalDistance / 2f && !hasIncreaseDifficulty)
+                IncreaseDifficulty();
+
             if (currentDistance <= totalDistance - spawnDistance)
             {
-                SpawmnEnemy();
+                if (hasIncreaseDifficulty)
+                    SpawnMediumEnemies();
+
+                SpawmnSmallEnemies();
                 spawnDistance += totalDistance / spawnDivider;
             }
         }
@@ -70,7 +81,6 @@ public class SpawnManager : MonoBehaviour
 
             if (!astroideTimer.IsTimerPause())
                 astroideTimer.PauseTimer();
-
         }
     }
 
@@ -80,33 +90,52 @@ public class SpawnManager : MonoBehaviour
     }
     private void SpawnAstroide()
     {
-
         if (astroideTimer.IsDone())
         {
-            Vector2 spawnPos = new Vector2(Random.Range(-2.69f, 2.69f), transform.position.y);
+            Vector2 spawnPos = new Vector2(Random.Range(-2.6f, 2.6f), transform.position.y);
             Astroide tempAstroide = Instantiate<Astroide>(astroide, spawnPos, Quaternion.identity);
-
 
             int random = Random.Range(0, allItems.Count);
             tempAstroide.SetItem(allItems[random], this);
 
-            astroideTimer.StartTimer(2f, 4.6f);
+            if (hasIncreaseDifficulty)
+            {
+                tempAstroide.damage *= IncreaseMulitplier;
+                tempAstroide.health *= IncreaseMulitplier;
+            }
+
+            astroideTimer.StartTimer(astroideSpawnTimes[0], astroideSpawnTimes[1]);
             emeniesAlive.Add(tempAstroide);
         }
     }
 
-    private void SpawmnEnemy()
+    public void IncreaseDifficulty()
+    {
+        hasIncreaseDifficulty = true;
+        spawnDivider += 10;
+    }
+    private void SpawnMediumEnemies()
+    {
+        if (isDoneSpawning && smallEnemiesHasSpawned)
+        {
+            isDoneSpawning = false;
+            StartCoroutine(SpawnShip(enemyShips[1], 3, waypointsMediumEnemies, 0.4f));
+            smallEnemiesHasSpawned = false;
+        }
+    }
+    private void SpawmnSmallEnemies()
     {
         if (isDoneSpawning)
         {
             isDoneSpawning = false;
-            StartCoroutine(SpawnShip());
+            StartCoroutine(SpawnShip(enemyShips[0], 6, waypointsSmallEnemies, 0.25f));
+            smallEnemiesHasSpawned = true;
         }
     }
 
     public bool AllEnmiesDied()
     {
-        return emeniesAlive.Count == 0;
+        return emeniesAlive.Count == 0 && gameEnded;
     }
 
     public void RemoveFromList(Enemy enemy)
@@ -114,23 +143,19 @@ public class SpawnManager : MonoBehaviour
         emeniesAlive.Remove(enemy);
     }
 
-    IEnumerator SpawnShip()
+    IEnumerator SpawnShip(EnemyShip enemyship, int waveLenght, List<Transform> waypoints, float spawnRate)
     {
-        if (ship)
+        if (enemyship)
         {
-
-            if (wayPointIndex == waypointsParents.Count)
-                wayPointIndex = 0;
+            wayPointIndex = Random.Range(0, waypoints.Count);
             for (int i = 0; i < waveLenght; i++)
             {
                 bool paused = false;
-                //Debug.Log(random);
                 if (GameManager.IsPaused)
                 {
                     i--;
                     paused = true;
                     yield return new WaitUntil(() => !GameManager.IsPaused);
-
                 }
                 else
                 {
@@ -140,22 +165,18 @@ public class SpawnManager : MonoBehaviour
                         yield return new WaitForSeconds(timePassed);
                     }
                     timePassed = 0;
-                    EnemyShip tempShip = Instantiate<EnemyShip>(ship, transform);
-                    tempShip.SetWayPoints(waypointsParents[wayPointIndex]);
+                    EnemyShip tempShip = Instantiate<EnemyShip>(enemyship, transform);
+                    tempShip.SetWayPoints(waypoints[wayPointIndex]);
 
                     int random = Random.Range(0, allItems.Count);
                     tempShip.SetItem(allItems[random], this);
-                    emeniesAlive.Add(tempShip);
-                    yield return new WaitForSeconds(0.4f);
-                }
 
+                    emeniesAlive.Add(tempShip);
+                    yield return new WaitForSeconds(spawnRate);
+                }
             }
         }
-
-        wayPointIndex++;
         isDoneSpawning = true;
-
     }
-
 }
 

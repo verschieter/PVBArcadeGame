@@ -27,7 +27,7 @@ public class InvincibleItem : Item
         base.OnPlayerCollision();
         if (!isDuplicate)
         {
-            EffectTimer.StartTimer(effectDuration);
+            effectTimer.StartTimer(effectDuration);
 
             player.gameObject.layer = LayerMask.NameToLayer("OnlyItems");
             playerSprite = player.GetComponent<SpriteRenderer>();

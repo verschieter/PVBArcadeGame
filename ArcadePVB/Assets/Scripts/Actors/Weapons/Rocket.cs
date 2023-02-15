@@ -42,7 +42,7 @@ public class Rocket : Weapon
                 transform.position = transform.position + new Vector3(0, moveSpeed * Time.deltaTime, 0);
             }
 
-            if (isExploding && Impact.isStopped)
+            if (isExploding && impact.isStopped)
             {
                 Destroy(gameObject);
             }
@@ -58,7 +58,7 @@ public class Rocket : Weapon
             circle.enabled = true;
             sprite.enabled = false;
             isExploding = true;
-            Impact.Play();
+            impact.Play();
             return;
         }
 

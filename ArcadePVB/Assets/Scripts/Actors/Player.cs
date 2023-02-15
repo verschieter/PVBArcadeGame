@@ -21,12 +21,13 @@ public class Player : MonoBehaviour
     public float moveSpeed;
     Vector2 movement;
     Rigidbody2D rb;
-    
+
     //xp
-    int Xp;
-    float levelUpAmount = 100;
+    int xp
+        ;
+    float levelUpAmount = 150;
     int timesLevelUped;
-    int maxLevel = 3;
+    int maxLevel = 2;
 
     //Inputs
     public string[] actionMapString = new string[4];
@@ -43,18 +44,15 @@ public class Player : MonoBehaviour
     public List<Item> activeItems = new List<Item>();
 
     //Camara
-    float Height;
-    float Width;
-    Vector2 Screen;
+    float height;
+    float width;
+    Vector2 screen;
     bool hasSpawned;
-
-   
 
     void Start()
     {
         fireTimer = new Timer();
         fireTimer.StartTimer(fireRate);
-
     }
 
     public void Spawned(GameManager mananger, UiManager UI, int id)
@@ -64,14 +62,14 @@ public class Player : MonoBehaviour
         gameManager = mananger;
 
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-        Height = sprite.bounds.size.y / 2;
-        Width = sprite.bounds.size.x / 2;
+        height = sprite.bounds.size.y / 2;
+        width = sprite.bounds.size.x / 2;
         hud = uiManager.SpawnHud(id, this);
-        hud.ChangeHealth(health);
-        hud.ChangeScore(totalScore, comboMultiplier);
+        hud.ChangeHealth();
+        hud.ChangeScore();
 
         Camera cam = Camera.main;
-        Screen = cam.ScreenToWorldPoint(new Vector3(UnityEngine.Screen.width, UnityEngine.Screen.height, cam.transform.position.z));
+        screen = cam.ScreenToWorldPoint(new Vector3(UnityEngine.Screen.width, UnityEngine.Screen.height, cam.transform.position.z));
         maxHealth = health;
         rb = GetComponent<Rigidbody2D>();
         hasSpawned = true;
@@ -152,28 +150,28 @@ public class Player : MonoBehaviour
     private void CameraBounds()
     {
         //keep player inside camera view
-        transform.position = new Vector2(Mathf.Clamp(transform.position.x, -Screen.x + Width, Screen.x - Width), Mathf.Clamp(transform.position.y, -Screen.y + Height, Screen.y - Height));
+        transform.position = new Vector2(Mathf.Clamp(transform.position.x, -screen.x + width, screen.x - width), Mathf.Clamp(transform.position.y, -screen.y + height, screen.y - height));
     }
     public void AddScore(int score, int xp)
     {
         comboAmount++;
-        Xp += xp;
+        this.xp += xp;
         if (comboAmount == comboChange && comboMultiplier != 8)
         {
             comboMultiplier *= 2;
             comboAmount = 0;
         }
 
-        if (Xp >= levelUpAmount && timesLevelUped < maxLevel)
+        if (this.xp >= levelUpAmount && timesLevelUped < maxLevel)
         {
             gameManager.Upgrade(this);
             timesLevelUped++;
-            levelUpAmount *= 1.5f;
-            Xp = 0;
+            levelUpAmount *= 2f;
+            this.xp = 0;
         }
 
         totalScore += comboMultiplier * score;
-        hud.ChangeScore(totalScore, comboMultiplier);
+        hud.ChangeScore();
 
     }
     void Fire(TypeFire type)
@@ -188,7 +186,7 @@ public class Player : MonoBehaviour
             case TypeFire.Laser:
                 firingLaser = Instantiate<Laser>(laser, firePos.position, Quaternion.identity);
                 firingLaser.transform.SetParent(transform);
-                //firingLaser.SetPlayer(this);
+                firingLaser.SetPlayer(this);
                 break;
 
             default:
@@ -207,11 +205,14 @@ public class Player : MonoBehaviour
     {
         health = Mathf.Clamp(health - changeAmount, 0, maxHealth);
 
-        comboMultiplier = 1;
-        comboAmount = 0;
+        if (changeAmount > 0)
+        {
+            comboMultiplier = 1;
+            comboAmount = 0;
+        }
 
-        hud.ChangeScore(totalScore, comboMultiplier);
-        hud.ChangeHealth(health);
+        hud.ChangeScore();
+        hud.ChangeHealth();
 
         if (health == 0)
         {

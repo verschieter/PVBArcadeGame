@@ -3,33 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PermantUpgradeItem : MonoBehaviour
+public class PermantUpgradeMenu : MonoBehaviour
 {
-    public GameObject PowerUpMenu;
+    public GameObject menuObject;
 
-    public Bullet UpgradedBullet;
 
+    public Bullet upgradedBullet;
     public Laser Upgradedlaser;
-
     public float speedMulitplier = 1.5f;
-
     public int extraHealth;
-
     public RocketLauncher launcher;
+
     Player player;
     List<Button> buttons;
-    int index;
+    int buttonIndex;
     bool movedSelection;
-
-    Upgrades[] upgrade;
     GameManager gameManager;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
     void Update()
@@ -64,13 +54,13 @@ public class PermantUpgradeItem : MonoBehaviour
     {
         player.moveSpeed *= speedMulitplier;
         player.fireRate /= speedMulitplier;
-        player.laser.chargingTime /= speedMulitplier;
+        player.laser.chargingTimeAmount /= speedMulitplier;
         Resume(Upgrades.SpeedUpgrade);
     }
 
     public void BulletUpgradeB()
     {
-        player.bullet = UpgradedBullet;
+        player.bullet = upgradedBullet;
         Resume(Upgrades.BulletUpgrade);
 
     }
@@ -84,30 +74,29 @@ public class PermantUpgradeItem : MonoBehaviour
     {
         Instantiate<RocketLauncher>(launcher, player.transform).Setup(player);
         Resume(Upgrades.Rockets);
-
     }
 
     void SelectButton(int changeIndex)
     {
-        index += changeIndex;
+        buttonIndex += changeIndex;
 
-        if (index < 0)
-            index = buttons.Count + changeIndex;
+        if (buttonIndex < 0)
+            buttonIndex = buttons.Count + changeIndex;
 
-        if (index == buttons.Count)
-            index = 0;
+        if (buttonIndex == buttons.Count)
+            buttonIndex = 0;
 
 
         if (buttons.Count != 0)
-            buttons[index].Select();
+            buttons[buttonIndex].Select();
         else
             Resume(0);
     }
 
     public void Spawn(Player player, List<Upgrades> disableUpgrades)
     {
-        Button[] allbuttons = PowerUpMenu.GetComponentsInChildren<Button>();
-        PowerUpMenu.SetActive(true);
+        Button[] allbuttons = menuObject.GetComponentsInChildren<Button>();
+        menuObject.SetActive(true);
         GameManager.IsPaused = true;
         this.player = player;
         gameManager = this.player.GiveGameManager();

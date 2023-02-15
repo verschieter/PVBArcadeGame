@@ -13,11 +13,11 @@ public class Laser : Weapon
     //Charging 
     public bool isCharging;
     int chargeTimes;
-    public float chargingTime;
+    public float chargingTimeAmount;
     public float chargeMultiplier;
     int chargeMax = 3;
-    public Vector3 size;
-    RaycastHit2D[] hit = new RaycastHit2D[5];
+    public Vector3 lineSize;
+    RaycastHit2D[] raycastHit = new RaycastHit2D[5];
 
     //Laser 
     float sizeTime;
@@ -26,7 +26,7 @@ public class Laser : Weapon
     float startTimeOffest = 0.25f;
 
     //collision
-    public BoxCollider2D LaserCollider;
+    public BoxCollider2D laserCollider;
     protected override void Start()
     {
         base.Start();
@@ -37,9 +37,9 @@ public class Laser : Weapon
 
 
         //set starting size, turn laser collider off and set the starting time.
-        ChargeObject.transform.localScale = size;
-        LaserCollider.enabled = false;
-        sizeTime = chargingTime - startTimeOffest;
+        ChargeObject.transform.localScale = lineSize;
+        laserCollider.enabled = false;
+        sizeTime = chargingTimeAmount - startTimeOffest;
 
 
         //Start the charging
@@ -59,12 +59,12 @@ public class Laser : Weapon
                 sizeTime += Time.deltaTime;
 
                 //Checks if the SizeTime has reached charginTime and makes sure chargeTimes doesnt get higher then the chargeMax
-                if (sizeTime >= chargingTime && chargeTimes < chargeMax)
+                if (sizeTime >= chargingTimeAmount && chargeTimes < chargeMax)
                 {
                     //scales size, reset sizeTime, set the chargeObject to new size and adds 1 to the chargeTimes
-                    size *= chargeMultiplier;
+                    lineSize *= chargeMultiplier;
                     sizeTime = 0;
-                    ChargeObject.transform.localScale = size;
+                    ChargeObject.transform.localScale = lineSize;
                     chargeTimes++;
                 }
 
@@ -96,7 +96,7 @@ public class Laser : Weapon
         {
             base.OnEnemyCollision(enemyObject);
             damage -= 10;
-            Impact.Play();
+            impact.Play();
         }
         transform.SetParent(null);
 
@@ -109,16 +109,16 @@ public class Laser : Weapon
             source.clip = sounds[1];
         if (!source.isPlaying)
             source.Play();
-        int hits = Physics2D.RaycastNonAlloc(transform.position + new Vector3(0, 0.5f), Vector2.up, hit);
+        int hits = Physics2D.RaycastNonAlloc(transform.position + new Vector3(0, 0.5f), Vector2.up, raycastHit);
 
         for (int i = 0; i < hits; i++)
         {
-            if (hit[i].transform.gameObject.layer == layer)
+            if (raycastHit[i].transform.gameObject.layer == layer)
             {
-                BoxCollider2D box = hit[i].transform.GetComponent<BoxCollider2D>();
+                BoxCollider2D box = raycastHit[i].transform.GetComponent<BoxCollider2D>();
 
-                float yLower = hit[i].transform.position.y - (box.bounds.center.y - box.bounds.extents.y);
-                laserLength = hit[i].transform.position.y - yLower - transform.position.y;
+                float yLower = raycastHit[i].transform.position.y - (box.bounds.center.y - box.bounds.extents.y);
+                laserLength = raycastHit[i].transform.position.y - yLower - transform.position.y;
             }
         }
 
@@ -127,16 +127,16 @@ public class Laser : Weapon
         ChargeObject.SetActive(false);
 
         //set the width of the lineLaser start and end to size with a offset
-        lineLaser.startWidth = size.x / 5;
-        lineLaser.endWidth = size.x / 5;
+        lineLaser.startWidth = lineSize.x / 5;
+        lineLaser.endWidth = lineSize.x / 5;
 
         //set the length of the lineLaser
         lineLaser.SetPosition(1, new Vector3(0, laserLength, 1));
 
         //set the size of the laserCollider to match the viseule of the LineRederer and enables collision
-        LaserCollider.size = new Vector2(lineLaser.startWidth, laserLength);
-        LaserCollider.offset = new Vector2(0, laserLength / 2);
-        LaserCollider.enabled = true;
+        laserCollider.size = new Vector2(lineLaser.startWidth, laserLength);
+        laserCollider.offset = new Vector2(0, laserLength / 2);
+        laserCollider.enabled = true;
     }
     public void SetCharge(bool charge)
     {

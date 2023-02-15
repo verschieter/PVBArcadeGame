@@ -11,7 +11,7 @@ public class Item : MonoBehaviour
     Rigidbody2D rb;
     float fallSpeed = 0.5f;
 
-    protected Timer EffectTimer;
+    protected Timer effectTimer;
     protected bool effectStarted;
     [SerializeField]
     protected float effectDuration = 1;
@@ -24,7 +24,7 @@ public class Item : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        EffectTimer = new Timer();
+        effectTimer = new Timer();
 
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
@@ -44,27 +44,27 @@ public class Item : MonoBehaviour
     {
         if (!GameManager.IsPaused)
         {
-            if (EffectTimer.IsTimerPause())
-                EffectTimer.PauseTimer();
+            if (effectTimer.IsTimerPause())
+                effectTimer.PauseTimer();
 
             if (!effectStarted)
                 transform.position -= (Vector3)fallVector * Time.deltaTime;
 
-            if (effectStarted && EffectTimer.IsDone())
+            if (effectStarted && effectTimer.IsDone())
             {
                 ResetEffect();
             }
         }
         else
         {
-            if (!EffectTimer.IsTimerPause())
-                EffectTimer.PauseTimer();
+            if (!effectTimer.IsTimerPause())
+                effectTimer.PauseTimer();
         }
     }
 
     public void AddToTimer(float addedTime)
     {
-        EffectTimer.StartTimer(EffectTimer.RemainingTime() + addedTime);
+        effectTimer.StartTimer(effectTimer.RemainingTime() + addedTime);
     }
 
     public virtual void OnPlayerCollision()
@@ -86,7 +86,10 @@ public class Item : MonoBehaviour
             duplicateItem.AddToTimer(effectDuration);
             ResetEffect();
         }
-        player.activeItems.Add(this);
+        else
+        {
+            player.activeItems.Add(this);
+        }
     }
 
 
@@ -97,7 +100,7 @@ public class Item : MonoBehaviour
             player = col.gameObject.GetComponent<Player>();
             OnPlayerCollision();
         }
-        else
+        if (col.gameObject.layer == LayerMask.NameToLayer("BlockA"))
             Destroy(gameObject);
     }
 

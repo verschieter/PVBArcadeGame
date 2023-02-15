@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class BGMove : MonoBehaviour
 {
-    public float ScrollSpeed;
-    Vector2 Movement;
+    public float scrollSpeed;
+    Vector2 movement;
     public Transform endPoint;
     public GameManager gameManager;
 
@@ -13,17 +13,17 @@ public class BGMove : MonoBehaviour
     {
         if (!GameManager.IsPaused)
         {
-            MovingBackGround();
+            MovingBackground();
         }
     }
 
-    private void MovingBackGround()
+    private void MovingBackground()
     {
         //move the gameObject upwards untill it is or is higher then endpoint Y position
         if (transform.position.y >= -endPoint.position.y)
         {
-            Movement.y = ScrollSpeed * Time.deltaTime;
-            transform.position = (Vector2)transform.position - Movement;
+            movement.y = scrollSpeed * Time.deltaTime;
+            transform.position = (Vector2)transform.position - movement;
         }
         else
         {

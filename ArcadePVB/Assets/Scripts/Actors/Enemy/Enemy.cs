@@ -46,6 +46,7 @@ public class Enemy : MonoBehaviour
     {
         if (item)
             Instantiate<Item>(item, transform.position, Quaternion.identity);
+
         if (player)
             player.AddScore(scorePoint, xpAmount);
         
@@ -55,9 +56,5 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+   
 }

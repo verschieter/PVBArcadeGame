@@ -19,7 +19,7 @@ public class Bullet : Weapon
         if (!GameManager.IsPaused)
         {
 
-            if (Impact.isStopped)
+            if (impact.isStopped)
                 transform.position = transform.position + new Vector3(0, moveSpeed * Time.deltaTime, 0);
             else
             {
@@ -37,6 +37,6 @@ public class Bullet : Weapon
     public override void OnEnemyCollision(GameObject enemyObject)
     {
         base.OnEnemyCollision(enemyObject);
-        Impact.Play();
+        impact.Play();
     }
 }

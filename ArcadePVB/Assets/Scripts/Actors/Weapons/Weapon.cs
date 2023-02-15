@@ -6,7 +6,7 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public float damage;
-    protected ParticleSystem Impact;
+    protected ParticleSystem impact;
     protected Player player;
     protected AudioSource source;
     public List<AudioClip> sounds = new List<AudioClip>();
@@ -14,7 +14,7 @@ public class Weapon : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        Impact = GetComponent<ParticleSystem>();
+        impact = GetComponent<ParticleSystem>();
         source = GetComponent<AudioSource>();
         source.clip = sounds[0];
         source.Play();
@@ -25,7 +25,7 @@ public class Weapon : MonoBehaviour
     {
         if (!GameManager.IsPaused)
         {
-            if (Impact.isStopped && hit)
+            if (impact.isStopped && hit)
             {
                 Destroy(gameObject);
             }

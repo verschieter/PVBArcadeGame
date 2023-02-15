@@ -11,7 +11,6 @@ public class SaveManager : MonoBehaviour
     void Awake()
     {
         saveAmount = highscoreString.Length;
-        //ResetHighscore();
         for (int i = 1; i <= saveAmount; i++)
         {
             string a = PlayerPrefs.GetString(i.ToString());
@@ -27,8 +26,9 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    public void IsInHighscore( string name, int amount)
+    public void IsInHighscore(string name, int amount)
     {
+
         for (int i = 1; i <= saveAmount; i++)
         {
             string indexNameAndScore = PlayerPrefs.GetString(i.ToString());
@@ -40,7 +40,7 @@ public class SaveManager : MonoBehaviour
                 for (int index = 1; index <= saveAmount - i; index++)
                 {
                     //replace the bottom score with the previous one
-      
+
                     int newIndex = saveAmount - index;
                     string newName = PlayerPrefs.GetString(newIndex.ToString());
                     int oldIndex = newIndex + 1;
@@ -51,7 +51,18 @@ public class SaveManager : MonoBehaviour
             }
         }
     }
-    //mostly for debugs
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Alpha5) && Input.GetKeyDown(KeyCode.Return))
+        {
+            ResetHighscore();
+
+        }
+
+    }
+
+    //Reset All Scores
     public void ResetHighscore()
     {
         PlayerPrefs.DeleteAll();

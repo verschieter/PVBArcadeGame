@@ -103,10 +103,8 @@ MonoBehaviour:
   health: 100
   totalScore: 0
   comboMultiplier: 1
-  uiManager: {fileID: 0}
-  gameManager: {fileID: 0}
   id: 2
-  moveSpeed: 2
+  moveSpeed: 3
   actionMapString:
   - P2Hori
   - P2Verti

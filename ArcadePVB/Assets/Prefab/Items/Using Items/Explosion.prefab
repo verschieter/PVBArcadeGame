@@ -5036,7 +5036,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effectDuration: 0.5
-  damage: 100
+  damage: 40
   explosion: {fileID: 3049091075052753495}
   clip: {fileID: 8300000, guid: 1bff22e01fdabda4fb7e21e4d3799edb, type: 3}
 --- !u!82 &-7706243125144548088

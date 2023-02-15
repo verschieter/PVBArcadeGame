@@ -12,7 +12,6 @@ public class EnemyShip : Enemy
     public float speed = 0.5f;
     public float fireRate = 1f;
     Timer fireTimer;
-    // Start is called before the first frame update
 
     public EnemyShip()
     {
@@ -24,7 +23,7 @@ public class EnemyShip : Enemy
 
         source.clip = sounds;
         
-        fireTimer.StartTimer(1, 3);
+        fireTimer.StartTimer(fireRate, fireRate * 2);
     }
 
     public void SetWayPoints(Transform parentPoint)
@@ -80,6 +79,9 @@ public class EnemyShip : Enemy
     {
         if (wavepointIndex >= wayPoints.Length - 1)
         {
+            if (spawnManager)
+                spawnManager.RemoveFromList(this);
+
             Destroy(gameObject);
             return;
         }

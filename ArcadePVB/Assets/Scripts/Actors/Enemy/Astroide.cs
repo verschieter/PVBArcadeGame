@@ -27,7 +27,12 @@ public class Astroide : Enemy
                 rb.velocity = -fallSpeed;
 
             if (explosionParticle.isStopped && isDestroyed == true)
-                Destroyed(null);
+            {
+                if (spawnManager)
+                    spawnManager.RemoveFromList(this);
+
+                Destroy(gameObject);
+            }
         }
         else
         {

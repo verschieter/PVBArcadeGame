@@ -181,7 +181,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 2e2f8456cc02ca14b9f28c9d4b703b8b, type: 3}
   ChargeObject: {fileID: 643558505162588023}
   isCharging: 0
-  chargingTime: 2
+  chargingTime: 0.8888889
   chargeMultiplier: 1.25
   size: {x: 0.3, y: 0.3, z: 1}
   LaserCollider: {fileID: 7334044171027869025}
@@ -5081,7 +5081,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -1
   m_Sprite: {fileID: -594113106, guid: 779afb95235b10245870bb3045ffd4d5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

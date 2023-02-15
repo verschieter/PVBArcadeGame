@@ -12,18 +12,22 @@ public class GameManager : MonoBehaviour
     public Player[] players = new Player[2];
     public SaveManager saveManager;
     public SpawnManager spawnManager;
-    int totalscore;
+    int totalScore;
     Vector2 spawnOffset = new Vector2(-0.3f, 0);
 
-    public PermantUpgradeItem UpgradePlayer;
+    public PermantUpgradeMenu UpgradeMenu;
     List<Upgrades> upgrades = new List<Upgrades>();
     bool gameEnded;
 
     Timer pauseTimer;
     float pauseTimeAmount = 0.5f;
+
+    Player player1;
+    Player player2;
     // Start is called before the first frame update
     void Start()
     {
+        IsPaused = false;
         startAmount = amountPlayer;
         pauseTimer = new Timer();
         pauseTimer.StartTimer(pauseTimeAmount);
@@ -34,12 +38,12 @@ public class GameManager : MonoBehaviour
             switch (i)
             {
                 case 1:
-                    Player player1 = Instantiate<Player>(players[0], spawnOffset, players[0].transform.rotation);
+                    player1 = Instantiate<Player>(players[0], spawnOffset, players[0].transform.rotation);
                     player1.Spawned(this, uiManager, 1);
 
                     break;
                 case 2:
-                    Player player2 = Instantiate<Player>(players[1], -spawnOffset, players[1].transform.rotation);
+                    player2 = Instantiate<Player>(players[1], -spawnOffset, players[1].transform.rotation);
                     player2.Spawned(this, uiManager, 2);
                     break;
             }
@@ -48,43 +52,54 @@ public class GameManager : MonoBehaviour
     public void GameOver(int score)
     {
         amountPlayer--;
-        totalscore += score;
+        totalScore += score;
         if (amountPlayer == 0)
         {
+            gameEnded = true;
             ShowGameOverScreen(false);
         }
-        gameEnded = true;
     }
     public void GameWon()
     {
-        totalscore = 0;
-
-        if (amountPlayer == 1)
-            totalscore = players[0].totalScore;
-
-        else
-            totalscore = players[0].totalScore + players[1].totalScore;
-
-        gameEnded = true;
         spawnManager.GameOver();
     }
 
     public void ShowGameOverScreen(bool hasWon)
     {
-        uiManager.SetGameOverMenu(true, hasWon);
-        IsPaused = true;
+        if (!IsPaused)
+        {
+            if (hasWon)
+            {
+
+                if (amountPlayer == 1)
+                {
+                    if (player1)
+                        totalScore += player1.totalScore;
+
+                    else
+                        totalScore += player2.totalScore;
+
+                }
+
+                else
+                    totalScore = player1.totalScore + player2.totalScore;
+            }
+
+            uiManager.SetGameOverMenu(true, hasWon);
+            IsPaused = true;
+        }
     }
 
     // Update is called once per frame
 
     public void SaveScore(string name)
     {
-        saveManager.IsInHighscore(name, totalscore);
+        saveManager.IsInHighscore(name, totalScore);
     }
 
     public void Upgrade(Player player)
     {
-        Instantiate<PermantUpgradeItem>(UpgradePlayer).Spawn(player, upgrades);
+        Instantiate<PermantUpgradeMenu>(UpgradeMenu).Spawn(player, upgrades);
 
     }
 
@@ -93,18 +108,28 @@ public class GameManager : MonoBehaviour
         upgrades.Add(type);
     }
 
-    void Update()
+    void Pause()
     {
-
-        if (Input.GetAxis("Pause") > 0 && pauseTimer.IsDone() && !gameEnded)
+        if (!IsPaused || uiManager.pauseObject.activeSelf)
         {
             IsPaused = !IsPaused;
             uiManager.SetPauseMenu();
             pauseTimer.StartTimer(pauseTimeAmount);
         }
 
-        if (gameEnded && spawnManager.AllEnmiesDied())
+    }
+
+    void Update()
+    {
+
+        if (Input.GetAxis("Pause") > 0 && pauseTimer.IsDone() && !gameEnded)
         {
+            Pause();
+        }
+
+        if (spawnManager.AllEnmiesDied())
+        {
+            gameEnded = true;
             ShowGameOverScreen(true);
         }
     }

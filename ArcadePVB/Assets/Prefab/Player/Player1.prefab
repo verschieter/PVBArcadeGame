@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 8443806293601750095}
   - component: {fileID: 8443806293601750088}
   - component: {fileID: 1671814228}
+  - component: {fileID: 454782590394556616}
   m_Layer: 6
   m_Name: Player1
   m_TagString: Untagged
@@ -135,7 +136,7 @@ MonoBehaviour:
   totalScore: 0
   comboMultiplier: 1
   id: 1
-  moveSpeed: 2
+  moveSpeed: 3
   actionMapString:
   - P1Hori
   - P1Verti
@@ -193,3 +194,29 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.47914222, y: 0.6664283}
   m_EdgeRadius: 0
+--- !u!68 &454782590394556616
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8443806293601750092}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: 0.1, y: -0.2}
+  - {x: 0.23, y: 0}
+  - {x: 0.1, y: 0.2}
+  - {x: -0.2, y: 0.33}
+  - {x: -0.2, y: -0.33}
+  - {x: 0.1, y: -0.2}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0

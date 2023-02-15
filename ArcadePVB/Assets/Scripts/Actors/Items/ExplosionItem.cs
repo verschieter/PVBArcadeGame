@@ -39,7 +39,7 @@ public class ExplosionItem : Item
         base.OnPlayerCollision();
         explosion.Play();
         effectStarted = true;
-        EffectTimer.StartTimer(effectDuration);
+        effectTimer.StartTimer(effectDuration);
         explosionCollider.enabled = true;
         gameObject.layer = LayerMask.NameToLayer("Bullet");
     }
